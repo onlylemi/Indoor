@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.onlylemi.indoor.TestActivity">
+
+    <com.onlylemi.camera.PreviewSurface
+        android:id="@+id/previewSurface1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"></com.onlylemi.camera.PreviewSurface>
+
+    <com.onlylemi.map.MapView
+        android:id="@+id/mapview1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></com.onlylemi.map.MapView>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click" />
+
+    <ImageView
+        android:id="@+id/position_btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="130dip"
+        android:layout_marginLeft="15dip"
+        android:src="@drawable/position_slector" />
+
+    <Button
+        android:id="@+id/button21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="NEXT" />
+
+</RelativeLayout>
