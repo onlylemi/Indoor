@@ -57,7 +57,7 @@ public class IndoorFragment extends Fragment implements View.OnClickListener, In
 
     private OnFragmentInteractionListener mListener;
 
-    public static final String TAG = "IndoorFragment:";
+    public static final String TAG = "IndoorActivity:";
 
     public static String apiVenueId; // 地点id
     public static String apiFloorId; // 楼层id

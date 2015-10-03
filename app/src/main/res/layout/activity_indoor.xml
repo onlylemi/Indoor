@@ -13,6 +13,26 @@
         android:layout_height="0dp"
         android:layout_weight="1.0">
 
+        <RelativeLayout
+            android:id="@+id/camera_route"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <com.onlylemi.camera.PreviewSurface
+                android:id="@+id/preview_camera_surface"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.onlylemi.camera.RouteSurface
+                android:id="@+id/route_camera_surface"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+
+
         <com.onlylemi.map.MapView
             android:id="@+id/mapview"
             android:layout_width="match_parent"

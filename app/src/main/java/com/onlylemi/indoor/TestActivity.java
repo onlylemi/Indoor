@@ -20,6 +20,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.onlylemi.camera.PreviewSurface;
+import com.onlylemi.camera.RouteSurface;
 import com.onlylemi.map.MapView;
 import com.onlylemi.map.MapViewListener;
 import com.onlylemi.map.core.PMark;
@@ -74,6 +76,7 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
     private boolean isMapViewSmall = false;
 
     private PreviewSurface previewSurface;
+    private RouteSurface routeSurface;
 
 
     @Override
@@ -105,7 +108,8 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
 //                R.mipmap.supermarket);
 
 
-        previewSurface = (PreviewSurface) findViewById(R.id.previewSurface1);
+        previewSurface = (PreviewSurface) findViewById(R.id.preview_surface1);
+        routeSurface = (RouteSurface) findViewById(R.id.route_camera_surface1);
 
         final Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().getPath() + "/indoor/tangjiu.png");
         mapView.loadMap(com.onlylemi.utils.Assist.getPictureFromBitmap(bitmap));
@@ -162,10 +166,13 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
                         lp.height = mapView.getHeight() / 3;
                         lp.width = mapView.getWidth() / 3;
                         previewSurface.setVisibility(View.VISIBLE);
+                        routeSurface.setVisibility(View.VISIBLE);
                     } else {
                         lp.height = mapView.getHeight() * 3;
                         lp.width = mapView.getWidth() * 3;
                         previewSurface.setVisibility(View.GONE);
+                        routeSurface.setVisibility(View.GONE);
+
                     }
                     isMapViewSmall = !isMapViewSmall;
                     mapView.setLayoutParams(lp);
@@ -219,9 +226,10 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
         button2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent().setClass(TestActivity.this, MainActivity.class));
+                startActivity(new Intent().setClass(TestActivity.this, IndoorActivity.class));
             }
         });
+
     }
 
 

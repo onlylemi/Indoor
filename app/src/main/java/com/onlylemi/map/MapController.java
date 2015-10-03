@@ -124,6 +124,16 @@ public class MapController {
         this.mapMainView.setMapCenterWithPoint(point);
     }
 
+    /**
+     * 设置地图居中
+     *
+     * @param horizontal
+     * @param vertical
+     */
+    public void setMapCenter(boolean horizontal, boolean vertical) {
+        this.mapMainView.mapCenter(horizontal, vertical);
+    }
+
     public MapOverlay getMapOverlay() {
         return mapMainView.getMapOverlay();
     }

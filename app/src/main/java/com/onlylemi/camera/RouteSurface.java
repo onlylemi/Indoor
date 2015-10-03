@@ -104,10 +104,8 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
         if (canvas != null && isTouch) {
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //清除画布
 
-            //照相机默认设置为横屏，改变坐标系，为竖屏坐标系
-            canvas.translate(0, screenH);
-            canvas.rotate(-90);
-            drawArrow(canvas, paint);
+            drawArrowOnPortrait(canvas, paint);
+//            drawArrowOnLandscape(canvas, paint);
             //canvas.drawCircle(x, y, 20, paint);
 
         }
@@ -116,20 +114,32 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         isTouch = true;
-        x = screenH - event.getY();
-        y = event.getX();
+        x = event.getX();
+        y = event.getY();
 
         return super.onTouchEvent(event);
     }
 
-    private void drawArrow(Canvas canvas, Paint paint) {
+    /**
+     * 横屏时绘制
+     *
+     * @param canvas
+     * @param paint
+     */
+    private void drawArrowOnLandscape(Canvas canvas, Paint paint) {
+        canvas.save();
+        canvas.translate(0, screenH);
+        canvas.rotate(-90);
         float xn = screenH / 2;
         float yn = screenW;
 
+        float x1 = screenH - y;
+        float y1 = x;
+
         canvas.save();
-        canvas.translate(x, y);
-        if (yn != y) {
-            float degree = (float) Math.toDegrees(Math.atan2(xn - x, yn - y));
+        canvas.translate(x1, y1);
+        if (yn != y1) {
+            float degree = (float) Math.toDegrees(Math.atan2(xn - x1, yn - y1));
             canvas.rotate(-degree);
             Log.i(TAG, "degree:" + degree);
         } else {
@@ -145,8 +155,38 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
         canvas.drawPath(path, paint);*/
 
 
-        RectF rectF = new RectF(0, -200, 200, (screenW - (int) y));
-        if (x > screenH / 2) {
+        RectF rectF = new RectF(0, -200, 200, (screenW - (int) y1));
+        if (x1 > xn) {
+            canvas.drawBitmap(bmp3DStraight, null, rectF, paint);
+        } else {
+            canvas.drawBitmap(bmp3DStraightConvert, null, rectF, paint);
+        }
+        canvas.restore();
+        canvas.restore();
+
+    }
+
+    /**
+     * 竖屏时绘制
+     *
+     * @param canvas
+     * @param paint
+     */
+    private void drawArrowOnPortrait(Canvas canvas, Paint paint) {
+        float xn = screenW / 2;
+        float yn = screenH;
+
+        canvas.save();
+        canvas.translate(x, y);
+        if (yn != y) {
+            float degree = (float) Math.toDegrees(Math.atan2(xn - x, yn - y));
+            canvas.rotate(-degree);
+            Log.i(TAG, "degree:" + degree);
+        } else {
+            canvas.rotate(90);
+        }
+        RectF rectF = new RectF(0, -200, 200, (screenH - (int) y));
+        if (x > xn) {
             canvas.drawBitmap(bmp3DStraight, null, rectF, paint);
         } else {
             canvas.drawBitmap(bmp3DStraightConvert, null, rectF, paint);

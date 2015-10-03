@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,6 +34,8 @@ import com.indooratlas.android.IndoorAtlasListener;
 import com.indooratlas.android.ResultCallback;
 import com.indooratlas.android.ServiceState;
 import com.onlylemi.camera.CameraActivity;
+import com.onlylemi.camera.PreviewSurface;
+import com.onlylemi.camera.RouteSurface;
 import com.onlylemi.map.MapView;
 import com.onlylemi.map.MapViewListener;
 import com.onlylemi.map.core.PMark;
@@ -103,6 +107,14 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     private LinearLayout mark_intro;
     private LinearLayout mark_route;
 
+
+    //照相机预览视图
+    private RelativeLayout cameraRouteLayout;
+    private PreviewSurface previewCameraSurface;
+    private RouteSurface routeCameraSurface;
+
+    private boolean isMapViewSmall = false;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_indoor);
@@ -127,6 +139,11 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
         //传感器
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        //照相机
+        cameraRouteLayout = (RelativeLayout) findViewById(R.id.camera_route);
+        previewCameraSurface = (PreviewSurface) findViewById(R.id.preview_camera_surface);
+        routeCameraSurface = (RouteSurface) findViewById(R.id.route_camera_surface);
 
     }
 
@@ -426,7 +443,23 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         } else if (v == imgPosition) {
             togglePositioning();
         } else if (v == imgCameraPosition) {
-            startActivity(new Intent().setClass(IndoorActivity.this, CameraActivity.class));
+            //startActivity(new Intent().setClass(IndoorActivity.this, CameraActivity.class));
+
+            ViewGroup.LayoutParams lp = mapView.getLayoutParams();
+            if (!isMapViewSmall) {
+                lp.height = mapView.getHeight() / 3;
+                lp.width = mapView.getWidth() / 3;
+                cameraRouteLayout.setVisibility(View.VISIBLE);
+//                mapView.getController().setCurrentZoomValue(0.5f);
+            } else {
+                lp.height = mapView.getHeight() * 3;
+                lp.width = mapView.getWidth() * 3;
+                cameraRouteLayout.setVisibility(View.GONE);
+            }
+            isMapViewSmall = !isMapViewSmall;
+            mapView.setLayoutParams(lp);
+
+
         } else if (v == mark_intro) {
             markPop.dismiss();
 
@@ -593,6 +626,10 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 //                Log.i(TAG, "value[2]:" + values[2]);
             }
 
+            if (isMapViewSmall) {
+                mapView.getController().setMapCenterWithPoint(locationOverlay.getPosition());
+                mapView.getController().setCurrentRotationDegrees(mapDegree + degree);
+            }
 
             locationOverlay.setIndicatorCircleRotateDegree(degree);
             locationOverlay.setIndicatorArrowRotateDegree(mapDegree + mapView.getCurrentRotateDegrees() - degree);

@@ -5,15 +5,22 @@
     tools:context="com.onlylemi.indoor.TestActivity">
 
     <com.onlylemi.camera.PreviewSurface
-        android:id="@+id/previewSurface1"
+        android:id="@+id/preview_surface1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"></com.onlylemi.camera.PreviewSurface>
+        android:visibility="gone" />
+
+    <com.onlylemi.camera.RouteSurface
+        android:id="@+id/route_camera_surface1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 
     <com.onlylemi.map.MapView
         android:id="@+id/mapview1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.onlylemi.map.MapView>
+        android:layout_height="match_parent" />
 
     <Button
         android:id="@+id/button1"
