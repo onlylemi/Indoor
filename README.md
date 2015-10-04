@@ -1,2 +1,2 @@
 ### Indoor
-`indoor_position`: an android project by Android Stduio
+`indoor_position`: an indoor position project with android by Android Stduio
