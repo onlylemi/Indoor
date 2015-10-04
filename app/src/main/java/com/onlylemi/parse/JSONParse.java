@@ -1,6 +1,7 @@
 package com.onlylemi.parse;
 
-import com.onlylemi.parse.info.BaseTable;
+
+import com.onlylemi.parse.info.*;
 
 import java.util.List;
 
@@ -15,14 +16,7 @@ public interface JSONParse {
      * @param vid 景点表id
      * @return
      */
-    List<BaseTable> getActivityTableList(int vid);
-
-    /**
-     * 得到City表数据
-     *
-     * @return
-     */
-    List<BaseTable> getCityTableList();
+    List<ActivityTable> getActivityTableList(int vid);
 
     /**
      * 得到FloorPlan表数据
@@ -31,7 +25,7 @@ public interface JSONParse {
      * @param fn  楼层
      * @return
      */
-    List<BaseTable> getFloorPlanTableList(int pid, int fn);
+    List<FloorPlanTable> getFloorPlanTableList(int pid, int fn);
 
     /**
      * 得到NodesContact表数据
@@ -40,7 +34,7 @@ public interface JSONParse {
      * @param fn  楼层
      * @return
      */
-    List<BaseTable> getNodesContactTableList(int pid, int fn);
+    List<NodesContactTable> getNodesContactTableList(int pid, int fn);
 
     /**
      * 得到Nodes表数据
@@ -49,7 +43,7 @@ public interface JSONParse {
      * @param fn  楼层
      * @return
      */
-    List<BaseTable> getNodesTableList(int pid, int fn);
+    List<NodesTable> getNodesTableList(int pid, int fn);
 
     /**
      * 得到Place表数据
@@ -57,7 +51,7 @@ public interface JSONParse {
      * @param cid 城市表id
      * @return
      */
-    List<BaseTable> getPlaceTableList(int cid);
+    List<PlaceTable> getPlaceTableList(int cid);
 
     /**
      * 得到Views表数据
@@ -65,6 +59,6 @@ public interface JSONParse {
      * @param pid 地区表id
      * @return
      */
-    List<BaseTable> getViewsTableList(int pid);
+    List<ViewsTable> getViewsTableList(int pid, int fn);
 
 }

@@ -14,13 +14,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -39,7 +37,6 @@ import com.onlylemi.map.core.PMark;
 import com.onlylemi.map.overlay.LocationOverlay;
 import com.onlylemi.map.overlay.MarkOverlay;
 import com.onlylemi.map.overlay.RouteOverlay;
-import com.onlylemi.map.utils.AssistMath;
 import com.onlylemi.map.utils.Assist;
 import com.onlylemi.parse.JSONParseTable;
 
@@ -94,19 +91,15 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL);
 
-
-//        nodes = getNodesList();
-//        nodesContact = getNodesContactList();
-
-        nodes = JSONParseTable.getNodesList();
-        nodesContact = JSONParseTable.getNodesContactList();
-        views = JSONParseTable.getViewsList();
-
-        //Assist.init(nodes, nodesContact);
+        //获取地图数据
+        int pid = 2;
+        int fn = 1;
+        views = JSONParseTable.getViewsList(pid, fn);
+        nodes = JSONParseTable.getNodesList(pid, fn);
+        nodesContact = JSONParseTable.getNodesContactList(pid, fn);
 
 //        final Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
 //                R.mipmap.supermarket);
-
 
         previewSurface = (PreviewSurface) findViewById(R.id.preview_surface1);
         routeSurface = (RouteSurface) findViewById(R.id.route_camera_surface1);

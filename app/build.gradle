@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.onlylemi.indoor"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    //compile fileTree(include: ['*.jar'], dir: 'libs')
+//    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.2.1'
 }
 
@@ -33,6 +33,9 @@ repositories {
 
 dependencies {
     compile(name: 'indooratlas-android-sdk-1.4.2-132-beta', ext: 'aar')
+    compile files('libs/baidumapapi_v3_5_0.jar')
+    compile files('libs/locSDK_5.2.jar')
+    compile files('libs/nineoldandroids-2.4.0.jar')
 }
 dependencies {
     compile 'com.android.support:design:22.+'
@@ -42,4 +45,10 @@ dependencies {
 }
 dependencies {
     compile 'com.android.support:design:22.+'
+}
+
+android {
+    packagingOptions {
+        exclude 'lib/armeabi/libcpaJNI.so'
+    }
 }

@@ -28,6 +28,10 @@ public class NodesContactTable extends BaseTable {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getN1() {
         return n1;
     }

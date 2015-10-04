@@ -171,9 +171,11 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         apiFloorId = Constants.TANGJIU_FLOOR_1_Id;
         apiFloorPlanId = Constants.TANGJIU_FLOOR_1_PLAN_Id;
 
-        views = JSONParseTable.getViewsList();
-        nodes = JSONParseTable.getNodesList();
-        nodesContact = JSONParseTable.getNodesContactList();
+        int pid = 2;
+        int fn = 1;
+        views = JSONParseTable.getViewsList(pid, fn);
+        nodes = JSONParseTable.getNodesList(pid, fn);
+        nodesContact = JSONParseTable.getNodesContactList(pid, fn);
 
         initIndoorAtlas();
         loadMapView();
