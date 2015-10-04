@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/card_background_white">
+
+    <RelativeLayout
+        android:id="@+id/item_main_adapter_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="180dp">
+
+        <ImageView
+            android:id="@+id/item_main_adapter_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_centerHorizontal="true" />
+
+        <CheckBox
+            android:id="@+id/id_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:focusable="false" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_main_adapter_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_main_adapter_relative_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="6dp"
+        android:gravity="center_horizontal"
+        android:text="测试等等"
+        android:textColor="@color/royalblue"
+        android:textSize="16sp" />
+</RelativeLayout>

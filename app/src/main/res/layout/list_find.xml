@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/card_background_white"
+    android:padding="16dp">
+
+
+    <ImageView
+        android:id="@+id/activity_googlecards_card_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="160dp" />
+
+    <TextView
+        android:id="@+id/activity_googlecards_card_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_googlecards_card_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/pale_black"
+        android:textSize="15sp"
+        android:textStyle="italic" />
+</RelativeLayout>
+
