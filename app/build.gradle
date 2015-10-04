@@ -46,9 +46,3 @@ dependencies {
 dependencies {
     compile 'com.android.support:design:22.+'
 }
-
-android {
-    packagingOptions {
-        exclude 'lib/armeabi/libcpaJNI.so'
-    }
-}
