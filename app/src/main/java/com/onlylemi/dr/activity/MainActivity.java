@@ -16,6 +16,7 @@ import com.onlylemi.dr.fragment.NavigationDrawerFragment;
 import com.onlylemi.dr.util.BaiduLocate;
 import com.onlylemi.indoor.R;
 import com.onlylemi.parse.Data;
+import com.onlylemi.user.Assist;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, MapFragment.OnFragmentInteractionListener {
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity
 
         if (BaiduLocate.getCurrentCity() != null) {
             mTitle = BaiduLocate.getCurrentCity();
+            Assist.currentCity = (String)mTitle;
+            Assist.currentCityID = Data.getCityId(BaiduLocate.getCurrentCity());
             for (int i = 0; i < Data.cityTableList.size(); i++) {
                 Log.i(TAG, mTitle + "==" + Data.cityTableList.get(i));
                 if (mTitle.equals(Data.cityTableList.get(i).getName())) {
@@ -96,6 +99,8 @@ public class MainActivity extends AppCompatActivity
                     findFragment.setCityID(Data.cityTableList.get(i).getId());
                     Log.i(TAG, "开始更新");
                     findFragment.upDate();
+                    Assist.currentCity = city;
+                    Assist.currentCityID = Data.cityTableList.get(i).getId();
                     break;
                 }
             }
