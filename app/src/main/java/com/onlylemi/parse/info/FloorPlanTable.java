@@ -1,16 +1,18 @@
 package com.onlylemi.parse.info;
 
+
 /**
  * Created by only乐秘 on 2015-09-20.
- *
+ * <p/>
  * floor_plan表
  */
 public class FloorPlanTable extends BaseTable {
 
     private int id;
     private int fn;
+    private int pid;
+
     private String image;
-    private String pid;
     private String floorplanid;
     private String floorid;
     private String venueid;
@@ -18,7 +20,7 @@ public class FloorPlanTable extends BaseTable {
     public FloorPlanTable() {
     }
 
-    public FloorPlanTable(int id, int fn, String image, String pid, String floorplanid, String floorid, String venueid) {
+    public FloorPlanTable(int id, int fn, String image, int pid, String floorplanid, String floorid, String venueid) {
         this.id = id;
         this.fn = fn;
         this.image = image;
@@ -30,6 +32,10 @@ public class FloorPlanTable extends BaseTable {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getFn() {
@@ -48,11 +54,11 @@ public class FloorPlanTable extends BaseTable {
         this.image = image;
     }
 
-    public String getPid() {
+    public int getPid() {
         return pid;
     }
 
-    public void setPid(String pid) {
+    public void setPid(int pid) {
         this.pid = pid;
     }
 

@@ -1,0 +1,74 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.onlylemi.dr.activity.EveryPartActivity">
+
+    <ScrollView
+        android:id="@+id/id_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/activity_every_part_image_view"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp" />
+
+            <RelativeLayout
+                android:id="@+id/activity_every_part_flag1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_every_part_image_view"
+                android:background="#cccc">
+
+                <TextView
+                    android:id="@+id/activity_every_part_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="1dp"
+                    android:scrollbars="vertical"
+                    android:singleLine="false"
+                    android:text="解释如下"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/activity_every_part_description_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/activity_every_part_text_view"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+
+            <com.onlylemi.dr.custom_view.MyGridView
+                android:id="@+id/activity_every_part_grid_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_every_part_flag1"
+                android:clickable="true"
+                android:horizontalSpacing="10dp"
+                android:numColumns="2"
+                android:scrollbars="none"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="10dp">
+
+            </com.onlylemi.dr.custom_view.MyGridView>
+
+            <Button
+                android:id="@+id/activity_every_part_position_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/activity_every_part_grid_view"
+                android:layout_margin="10dp"
+                android:text="一键导航" />
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

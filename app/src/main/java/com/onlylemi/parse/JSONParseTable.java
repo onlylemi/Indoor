@@ -3,19 +3,14 @@ package com.onlylemi.parse;
 import android.graphics.PointF;
 import android.util.Log;
 
+import com.onlylemi.dr.util.JSONHttp;
 import com.onlylemi.map.core.PMark;
 import com.onlylemi.map.utils.Assist;
-import com.onlylemi.parse.info.BaseTable;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +21,9 @@ public class JSONParseTable {
 
     public static final String TAG = "JSONParseTable:";
 
-    public static final String URL_SERVER = "http://indoor.onlylemi.com/";
+    public static final String URL_SERVER = "http://indoor.onlylemi.com/android/";
 
-    public static List<PointF> getNodesList() {
+    /*public static List<PointF> getNodesList() {
         final List<PointF> nodes = new ArrayList<>();
         new Thread(new Runnable() {
             @Override
@@ -139,6 +134,104 @@ public class JSONParseTable {
         }).start();
 
         return views;
+    }*/
+
+    /**
+     * getNodesList
+     *
+     * @param pid
+     * @param fn
+     * @return
+     */
+    public static List<PointF> getNodesList(int pid, int fn) {
+        final List<PointF> nodes = new ArrayList<>();
+        String url = URL_SERVER + "?r=nodes&p=" + pid + "&f=" + fn;
+        new JSONHttp(url, new JSONHttp.JSONHttpReturn() {
+            @Override
+            public void JSONReturn(String s) {
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Log.i(TAG, jsonObject.toString());
+                    JSONArray jsonArray = jsonObject.getJSONArray("nodes");
+                    Log.i(TAG, jsonArray.toString());
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jo = jsonArray.optJSONObject(i);
+                        nodes.add(new PointF(Integer.parseInt(jo.getString("x")), Integer.parseInt(jo.getString("y"))));
+                    }
+                    Assist.init(nodes, null);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        return nodes;
     }
+
+    /**
+     * getNodesContactList
+     *
+     * @param pid
+     * @param fn
+     * @return
+     */
+    public static List<PointF> getNodesContactList(int pid, int fn) {
+        final List<PointF> nodesContact = new ArrayList<>();
+        String url = URL_SERVER + "?r=nodes_contact&p=" + pid + "&f=" + fn;
+        new JSONHttp(url, new JSONHttp.JSONHttpReturn() {
+            @Override
+            public void JSONReturn(String s) {
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Log.i(TAG, jsonObject.toString());
+                    JSONArray jsonArray = jsonObject.getJSONArray("nodes_contact");
+                    Log.i(TAG, jsonArray.toString());
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jo = jsonArray.optJSONObject(i);
+                        nodesContact.add(new PointF(Integer.parseInt(jo.getString("n1")), Integer.parseInt(jo.getString("n2"))));
+                    }
+                    Assist.init(null, nodesContact);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        return nodesContact;
+    }
+
+    /**
+     * getViewsList
+     *
+     * @param pid
+     * @param fn
+     * @return
+     */
+    public static List<PMark> getViewsList(int pid, int fn) {
+        final List<PMark> views = new ArrayList<>();
+        String url = URL_SERVER + "?r=views&p=" + pid + "&f=" + fn;
+        new JSONHttp(url, new JSONHttp.JSONHttpReturn() {
+            @Override
+            public void JSONReturn(String s) {
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    Log.i(TAG, jsonObject.toString());
+                    JSONArray jsonArray = jsonObject.getJSONArray("views");
+                    Log.i(TAG, jsonArray.toString());
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jo = jsonArray.optJSONObject(i);
+                        views.add(new PMark(Integer.parseInt(jo.getString("x")), Integer.parseInt(jo.getString("y")), jo.getString("name")));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        return views;
+    }
+
 
 }
