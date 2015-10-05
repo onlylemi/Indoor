@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/card_background_white">
+    android:background="@color/custom_test_four">
 
     <RelativeLayout
         android:id="@+id/item_main_adapter_relative_layout"
         android:layout_width="match_parent"
-        android:layout_height="180dp">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/item_main_adapter_imageview"
@@ -20,12 +20,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:focusable="false" />
+            android:focusable="true" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/item_main_adapter_textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/item_main_adapter_relative_layout"
         android:layout_centerHorizontal="true"

@@ -25,6 +25,7 @@ import com.onlylemi.dr.util.AsyncImageLoader;
 import com.onlylemi.indoor.R;
 import com.onlylemi.parse.Data;
 import com.onlylemi.parse.info.PlaceTable;
+import com.onlylemi.user.Assist;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,7 @@ public class FindFragment extends Fragment {
                 intent.putExtra("MainPlace", s);
                 intent.putExtra("name", myAdapter.placeTables.get(position).getName());
                 intent.putExtra("intro", myAdapter.placeTables.get(position).getIntro());
+                Assist.currentPlaceId = pid;
                 startActivity(intent);
             }
         });

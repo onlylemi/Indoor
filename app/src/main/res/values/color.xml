@@ -326,7 +326,19 @@
     <!-- trend -->
     <color name="trend_bottom_bg">#f7f7f7</color>
 
+    <!--findFragement 的背景-->
     <color name="custom_test_one">#6e88e7</color>
     <color name="custom_test_two">#6e88e7</color>
+    <!--EveryParyActivity 的背景-->
+    <color name="custom_test_three">#9475a5e9</color>
+    <color name="custom_test_four">#96b9ea</color>
+    <color name="custom_test_five_title_background">#6cf047</color>
+    <color name="custom_test_six_navigation_background_unpress">#f29959</color>
+    <color name="custom_test_six_navigation_background_press">#62ef83</color>
+    <!--ReadyActivity of background -->
+    <color name="custom_test_start">#8df29959</color>
+    <color name="custom_test_middle">#b4dcd552</color>
+    <color name="custom_test_end">#1E88E5</color>
 
+    <color name="custom">#1E88E5</color>
 </resources>

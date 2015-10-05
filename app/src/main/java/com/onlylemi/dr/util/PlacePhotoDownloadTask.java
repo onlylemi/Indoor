@@ -65,8 +65,9 @@ public class PlacePhotoDownloadTask extends AsyncTask<String, Integer, Drawable>
             this.drawable = drawable;
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
              if (imageView != null && viewHolder == null) {
-                imageView.setImageBitmap(bitmapDrawable.getBitmap());
-            }
+//                imageView.setImageBitmap(bitmapDrawable.getBitmap());
+                 imageView.setBackground(drawable);
+             }
         } else {
             Log.i("TAG", "Place photo download faile image url = " + string);
         }
