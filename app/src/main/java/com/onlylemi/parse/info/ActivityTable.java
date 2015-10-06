@@ -12,6 +12,7 @@ public class ActivityTable extends BaseTable {
     private String image;
     private String time;
     private String intro;
+
     private int vid;
 
     public ActivityTable() {

@@ -16,6 +16,7 @@ import com.onlylemi.dr.util.DiskLruCache;
 import com.onlylemi.dr.util.JSONHttp;
 import com.onlylemi.dr.util.NetworkJudge;
 import com.onlylemi.indoor.R;
+import com.onlylemi.indoor.TestActivity;
 import com.onlylemi.parse.Data;
 import com.onlylemi.parse.info.*;
 
@@ -52,7 +53,6 @@ public class ReadyActivity extends Activity {
             }
         });
         BaiduLocate.getInstance().startLocate();
-
         setContentView(R.layout.activity_ready);
 
         //由于数据比较少，直接解析所有JSON数据 存到本地
@@ -85,7 +85,7 @@ public class ReadyActivity extends Activity {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case Constant.READY_GO:
-                        Intent intent = new Intent(ReadyActivity.this, MainActivity.class);
+                        Intent intent = new Intent(ReadyActivity.this, TestActivity.class);
                         startActivity(intent);
                         finish();
                         break;
