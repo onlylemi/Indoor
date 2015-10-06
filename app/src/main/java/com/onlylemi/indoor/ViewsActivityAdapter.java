@@ -1,18 +1,20 @@
 package com.onlylemi.indoor;
 
 import android.content.Context;
-import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.onlylemi.dr.util.AsyncImageLoader;
 import com.onlylemi.parse.Data;
 import com.onlylemi.parse.info.ActivityTable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 /**
  * Created by only乐秘 on 2015-10-05.
@@ -21,22 +23,35 @@ public class ViewsActivityAdapter extends BaseAdapter {
 
     private static final String TAG = "ViewsActivityAdapter:";
 
-    public List<ActivityTable> activityTable;
+    private List<ActivityTable> activityTable;
     private Context mContext;
-    private AsyncImageLoader asyncImageLoader;
     int pid = 2;
     int fn = 1;
+
+    private List<Integer> viewsActivityVidList;
+
 
     public ViewsActivityAdapter(Context context) {
         this.mContext = context;
         activityTable = new ArrayList<>();
+        viewsActivityVidList = new ArrayList<>();
+
         for (int i = 0; i < Data.viewTableList.size(); i++) {
             if (Data.viewTableList.get(i).getPid() == pid &&
                     Data.viewTableList.get(i).getFn() == fn) {
                 for (ActivityTable activities : Data.activityTableList) {
-                    if (activities.getVid() == Data.viewTableList.get(i).getId()) {
-                        activityTable.add(activities);
-                        break;
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    try {
+                        //结束时间
+                        long d1 = sdf.parse(activities.getEndTime()).getTime() + 24 * 60 * 60 * 1000;
+                        //当前时间
+                        long d2 = System.currentTimeMillis();
+                        if (activities.getVid() == Data.viewTableList.get(i).getId() && d2 <= d1) {
+                            activityTable.add(activities);
+                            viewsActivityVidList.add(activities.getVid());
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -77,10 +92,14 @@ public class ViewsActivityAdapter extends BaseAdapter {
         }
 
         activityHolder.name.setText(activityTable.get(position).getName());
-        activityHolder.time.setText(activityTable.get(position).getTime());
+        activityHolder.time.setText(activityTable.get(position).getStartTime() + " ~ " + activityTable.get(position).getEndTime());
         activityHolder.intro.setText(activityTable.get(position).getIntro());
 
         return convertView;
+    }
+
+    public List<Integer> getViewsActivityVidList() {
+        return viewsActivityVidList;
     }
 
     class FindActivityHolder {

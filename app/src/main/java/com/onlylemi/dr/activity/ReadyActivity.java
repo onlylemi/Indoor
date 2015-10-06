@@ -3,14 +3,18 @@ package com.onlylemi.dr.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.onlylemi.dr.costant_interface.Constant;
+import com.onlylemi.dr.util.AsyncImageLoader;
 import com.onlylemi.dr.util.BaiduLocate;
+import com.onlylemi.dr.util.DiskLruCache;
 import com.onlylemi.dr.util.JSONHttp;
+import com.onlylemi.dr.util.NetworkJudge;
 import com.onlylemi.indoor.R;
 import com.onlylemi.indoor.TestActivity;
 import com.onlylemi.parse.Data;
@@ -24,6 +28,9 @@ import com.onlylemi.parse.info.ViewsTable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ReadyActivity extends Activity {
 
@@ -57,8 +64,8 @@ public class ReadyActivity extends Activity {
         //由于数据比较少，直接解析所有JSON数据 存到本地
         JSONParse();
 
-        /*//判断是否删除缓存
-        if (NetworkJudge.isWifiEnabled(getApplicationContext())) {
+        //判断是否删除缓存
+        /*if (NetworkJudge.isWifiEnabled(getApplicationContext())) {
             try {
                 String cachePath;
                 if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
@@ -84,7 +91,7 @@ public class ReadyActivity extends Activity {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case Constant.READY_GO:
-                        Intent intent = new Intent(ReadyActivity.this, TestActivity.class);
+                        Intent intent = new Intent(ReadyActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                         break;
@@ -186,7 +193,8 @@ public class ReadyActivity extends Activity {
                         activityTable.setName(object.getString("name"));
                         activityTable.setId(object.getInt("id"));
                         activityTable.setImage(object.getString("image"));
-                        activityTable.setTime(object.getString("time"));
+                        activityTable.setStartTime(object.getString("start_time"));
+                        activityTable.setEndTime(object.getString("end_time"));
                         activityTable.setIntro(object.getString("intro"));
                         activityTable.setVid(object.getInt("vid"));
                         Data.activityTableList.add(activityTable);

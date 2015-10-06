@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -42,11 +43,14 @@ import com.onlylemi.dr.listViewAnimation.ScaleInAnimationAdapter;
 import com.onlylemi.map.MapView;
 import com.onlylemi.map.MapViewListener;
 import com.onlylemi.map.core.PMark;
+import com.onlylemi.map.overlay.BitmapOverlay;
 import com.onlylemi.map.overlay.LocationOverlay;
 import com.onlylemi.map.overlay.MarkOverlay;
 import com.onlylemi.map.overlay.RouteOverlay;
+import com.onlylemi.map.utils.AssistMath;
 import com.onlylemi.parse.JSONParseTable;
 import com.onlylemi.parse.JSONUpload;
+import com.onlylemi.parse.info.ActivityTable;
 import com.onlylemi.utils.Assist;
 import com.onlylemi.utils.Constants;
 
@@ -65,7 +69,7 @@ import java.util.List;
  * Created by only乐秘 on 2015-08-23.
  */
 public class IndoorActivity extends BaseActivity implements View.OnClickListener, IndoorAtlasListener,
-        MapViewListener, SensorEventListener, MarkOverlay.MarkIsClickListener {
+        MapViewListener, SensorEventListener, MarkOverlay.MarkIsClickListener, AdapterView.OnItemClickListener {
 
     public static final String TAG = "IndoorActivity:";
 
@@ -78,6 +82,8 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     public static List<PMark> views; //景点集
     public static List<PointF> nodes; //结点集
     public static List<PointF> nodesContact; //结点关系集
+    public static List<ActivityTable> viewsActivityList; //活动列表
+    private List<Integer> viewsActivityVidList; //活动 views id
 
     //头部
     private RelativeLayout layout_action;
@@ -98,6 +104,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     private LocationOverlay locationOverlay;
     private RouteOverlay routeOverlay;
     private MarkOverlay markOverlay;
+    private BitmapOverlay bitmapOverlay;
 
     //加载
     private RelativeLayout progress;
@@ -128,7 +135,9 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
     private String deviceId = "";
 
+    //activity list
     private ListView listViewActivity;
+    private ViewsActivityAdapter viewsActivityAdapter;
 
     @Override
     public void setContentView() {
@@ -161,11 +170,13 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         routeCameraSurface = (RouteSurface) findViewById(R.id.route_camera_surface);
 
         //侧边商家活动
+        viewsActivityAdapter = new ViewsActivityAdapter(this);
         listViewActivity = (ListView) findViewById(R.id.views_activity_list);
-
-        ScaleInAnimationAdapter scaleInAnimationAdapter = new ScaleInAnimationAdapter(new ViewsActivityAdapter(this), 0f);
+        ScaleInAnimationAdapter scaleInAnimationAdapter = new ScaleInAnimationAdapter(viewsActivityAdapter, 0f);
         scaleInAnimationAdapter.setListView(listViewActivity);
         listViewActivity.setAdapter(scaleInAnimationAdapter);
+
+        viewsActivityVidList = viewsActivityAdapter.getViewsActivityVidList();
     }
 
     @Override
@@ -174,7 +185,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         mapView.registerMapViewListener(this);
         imgPosition.setOnClickListener(this);
         imgCameraPosition.setOnClickListener(this);
-
+        listViewActivity.setOnItemClickListener(this);
 
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL);
@@ -475,11 +486,15 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
                 lp.height = mapView.getHeight() / 3;
                 lp.width = mapView.getWidth() / 3;
                 cameraRouteLayout.setVisibility(View.VISIBLE);
+                previewCameraSurface.setVisibility(View.VISIBLE);
+                routeCameraSurface.setVisibility(View.VISIBLE);
 //                mapView.getController().setCurrentZoomValue(0.5f);
             } else {
                 lp.height = mapView.getHeight() * 3;
                 lp.width = mapView.getWidth() * 3;
                 cameraRouteLayout.setVisibility(View.GONE);
+                previewCameraSurface.setVisibility(View.GONE);
+                routeCameraSurface.setVisibility(View.GONE);
             }
             isMapViewSmall = !isMapViewSmall;
             mapView.setLayoutParams(lp);
@@ -491,6 +506,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         } else if (v == mark_route) {
             markPop.dismiss();
             List<Integer> routeList = new ArrayList<>();
+
             PointF target = new PointF(views.get(markOverlay.getNum()).x, views.get(markOverlay.getNum()).y);
 
             routeList = com.onlylemi.map.utils.Assist.getShortestDistanceBetweenTwoPoints(locationOverlay.getPosition(),
@@ -509,9 +525,15 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onMapLoadComplete() {
+        //活动层
+        bitmapOverlay = new BitmapOverlay(mapView);
+        bitmapOverlay.setViews(views);
+        bitmapOverlay.setViewsActivityVidList(viewsActivityVidList);
+        mapView.getOverLays().add(bitmapOverlay);
+
         // 标记点层
         markOverlay = new MarkOverlay(mapView, 20);
-        markOverlay.setMarkIsClickListener(IndoorActivity.this);
+        markOverlay.setMarkIsClickListener(this);
         markOverlay.setMarks(views);
         mapView.getOverLays().add(markOverlay);
 
@@ -722,7 +744,11 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         mark_intro = (LinearLayout) view.findViewById(R.id.mark_intro);
         mark_route = (LinearLayout) view.findViewById(R.id.mark_route);
 
+        float distance = (Math.abs(views.get(num).x - locationOverlay.getPosition().x) +
+                Math.abs(views.get(num).y - locationOverlay.getPosition().y)) / 25;
+
         mark_name.setText(views.get(num).name);
+        mark_distance.setText(distance + "米");
 
         mark_intro.setOnClickListener(this);
         mark_route.setOnClickListener(this);
@@ -737,5 +763,26 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
         markPop.setAnimationStyle(R.style.MarkPop);
         markPop.showAsDropDown(imgPosition);
+    }
+
+
+    //AdapterView.OnItemClickListener
+    //=============================================================================
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ActivityTable activityTable = (ActivityTable) viewsActivityAdapter.getItem(position);
+
+        if (mapView.isMapLoadFinsh() && !isMapViewSmall) {
+            for (int i = 0; i < views.size(); i++) {
+                if (views.get(i).id == activityTable.getVid()) {
+                    Log.i(TAG, views.get(i).name + " " + views.get(i).id + " " + activityTable.getVid());
+                    mapView.getController().setMapCenterWithPoint(new PointF(views.get(i).x,
+                            views.get(i).y));
+                    mapView.refresh();
+                    break;
+                }
+            }
+        }
     }
 }

@@ -331,6 +331,11 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
         mark_route = (LinearLayout) view.findViewById(R.id.mark_route);
 
         mark_name.setText(views.get(num).name);
+        float distance = (Math.abs(views.get(num).x - locationOverlay.getPosition().x) +
+                Math.abs(views.get(num).y - locationOverlay.getPosition().y)) / 25;
+
+        mark_name.setText(views.get(num).name);
+        mark_distance.setText(distance + "米");
 
         mark_intro.setOnClickListener(this);
         mark_route.setOnClickListener(this);
