@@ -3,28 +3,27 @@ package com.onlylemi.dr.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.onlylemi.dr.costant_interface.Constant;
-import com.onlylemi.dr.util.AsyncImageLoader;
 import com.onlylemi.dr.util.BaiduLocate;
-import com.onlylemi.dr.util.DiskLruCache;
 import com.onlylemi.dr.util.JSONHttp;
-import com.onlylemi.dr.util.NetworkJudge;
 import com.onlylemi.indoor.R;
 import com.onlylemi.indoor.TestActivity;
 import com.onlylemi.parse.Data;
-import com.onlylemi.parse.info.*;
+import com.onlylemi.parse.info.ActivityTable;
+import com.onlylemi.parse.info.CityTable;
+import com.onlylemi.parse.info.FloorPlanTable;
+import com.onlylemi.parse.info.NodesContactTable;
+import com.onlylemi.parse.info.NodesTable;
+import com.onlylemi.parse.info.PlaceTable;
+import com.onlylemi.parse.info.ViewsTable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.File;
-import java.io.IOException;
 
 public class ReadyActivity extends Activity {
 
@@ -58,7 +57,7 @@ public class ReadyActivity extends Activity {
         //由于数据比较少，直接解析所有JSON数据 存到本地
         JSONParse();
 
-        //判断是否删除缓存
+        /*//判断是否删除缓存
         if (NetworkJudge.isWifiEnabled(getApplicationContext())) {
             try {
                 String cachePath;
@@ -78,7 +77,7 @@ public class ReadyActivity extends Activity {
                 e.printStackTrace();
             }
 
-        }
+        }*/
 
         handler = new Handler() {
             @Override

@@ -1,9 +1,11 @@
 package com.onlylemi.dr.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -24,11 +26,10 @@ import com.onlylemi.parse.Data;
 /**
  * @author 董神
  */
-public class EveryPartActivity extends Activity {
+public class EveryPartActivity extends AppCompatActivity {
 
     private static final String TAG = "EveryPartActivity:";
     private ImageView imageView;
-    private TextView textView;
     private TextView textViewDescription;
     private String string;
     private Button button;
@@ -38,6 +39,7 @@ public class EveryPartActivity extends Activity {
     private int pid;
     private String imageUrl;
     private CheckBox checkbox;
+    private String name;
 
     public EveryPartActivity() {
 
@@ -50,7 +52,6 @@ public class EveryPartActivity extends Activity {
         setContentView(R.layout.activity_every_part);
 
         imageView = (ImageView) findViewById(R.id.activity_every_part_image_view);
-        textView = (TextView) findViewById(R.id.activity_every_part_text_view);
         textViewDescription = (TextView) findViewById(R.id.activity_every_part_description_text_view);
         gridView = (MyGridView) findViewById(R.id.activity_every_part_grid_view);
 
@@ -61,8 +62,8 @@ public class EveryPartActivity extends Activity {
         String name = intent.getStringExtra("name");
 
 
-        textView.setText(name);
         textViewDescription.setText(intro);
+        this.name = name;
         new PlacePhotoDownloadTask(imageView).execute(imageUrl);
         this.initAdapter();
         gridView.setAdapter(adapter);
@@ -117,4 +118,13 @@ public class EveryPartActivity extends Activity {
             }
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setTitle(name);
+        return true;
+    }
+
 }
