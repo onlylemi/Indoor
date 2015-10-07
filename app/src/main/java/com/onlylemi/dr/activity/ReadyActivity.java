@@ -11,12 +11,15 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.onlylemi.dr.costant_interface.Constant;
+import com.onlylemi.dr.util.AsyncImageLoader;
 import com.onlylemi.dr.util.BaiduLocate;
 import com.onlylemi.dr.util.DiskLruCache;
 import com.onlylemi.dr.util.JSONHttp;
+import com.onlylemi.dr.util.NetworkJudge;
 import com.onlylemi.indoor.R;
 import com.onlylemi.parse.Data;
 import com.onlylemi.parse.info.ActivityTable;
@@ -34,8 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class ReadyActivity extends Activity {
 
@@ -44,11 +45,17 @@ public class ReadyActivity extends Activity {
     private static final int DISK_CACHE_DEFAULT_SIZE = 5 * 1024 * 1024;
     private DiskLruCache diskLruCache;
 
+
+    //表名列表
+    private final String CityTableName = "CityTable";
+    private final String FloorPlanTableName = "FloorPlanTable";
+    private final String NodesContactTableName = "NodesContactTable";
+    private final String PlaceTableName = "PlaceTable";
+    private final String ViewsTableName = "ViewsTable";
     private final String ActivityTableName = "ActivityTable";
+    private final String NodesTableName = "NodesTable";
 
-    private final String DataFileName = "indoor_data";
 
-    private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     //延时 handler
     public static Handler handler;
@@ -57,70 +64,6 @@ public class ReadyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        initDiskCache();
-
-        //百度地图SDK初始化 必须在 setContentView 之前
-        SDKInitializer.initialize(getApplicationContext());
-
-        //百度定位初始化
-        BaiduLocate.InitContext(getApplicationContext());
-        BaiduLocate.getInstance().setMyLocateListener(new BaiduLocate.MyLocateListener() {
-            @Override
-            public void LocateCallBack(int flag, String city, String address) {
-                Log.i(TAG, "定位回调监听成功");
-                Log.i(TAG, "city : " + city);
-                Log.i(BaiduLocate.TAG, "定位回调监听成功");
-                Log.i(BaiduLocate.TAG, "address : " + address);
-                BaiduLocate.getInstance().stopLocate();
-            }
-        });
-        BaiduLocate.getInstance().startLocate();
-
-        setContentView(R.layout.activity_ready);
-
-        /*//是否删除文件缓存
-        preferences = getPreferences(MODE_PRIVATE);
-        editor = preferences.edit();
-        int flag = preferences.getInt("Flag", -1);
-        if (flag == -1) {
-            editor.putInt("Flag", flag++);
-            JSONParse();//由于数据比较少，直接解析所有JSON数据 存到本地
-        } else if (flag % 2 == 0) {
-            clearCache();
-            JSONParse();//由于数据比较少，直接解析所有JSON数据 存到本地
-            editor.putInt("Flag", ++flag);
-            Log.e("Test", "network::::" + flag);
-            editor.commit();
-        } else {
-            JSONParseFromFile();//从本地获取
-            editor.putInt("Flag", ++flag);
-            Log.e("Test", "file::::" + flag);
-            editor.commit();
-        }*/
-
-
-       /* //判断是否删除缓存
-        if (NetworkJudge.isWifiEnabled(getApplicationContext())) {
-            try {
-                String cachePath;
-                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                        || !Environment.isExternalStorageRemovable()) {
-                    cachePath = getApplicationContext().getExternalCacheDir().getPath();
-                } else {
-                    cachePath = getApplicationContext().getCacheDir().getPath();
-                }
-                File cacheDir = new File(cachePath + File.separator + "bitmap");
-                Log.i(AsyncImageLoader.TAG, "cache dir :　" + cacheDir);
-                if (cacheDir.exists()) {
-                    DiskLruCache.deleteContents(cacheDir);
-                    Log.i(AsyncImageLoader.TAG, "cache dir :　" + cacheDir);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }*/
-        JSONParse();
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -136,19 +79,82 @@ public class ReadyActivity extends Activity {
             }
         };
 
-        handler.sendEmptyMessageDelayed(Constant.READY_GO, 2000);
-    }
 
-    /**
-     * 主进程的handler
-     *
-     * @return Handler
-     */
-    public static Handler getHandler() {
-        if (handler != null) return handler;
-        else return null;
-    }
 
+
+        initDiskCache();
+        //是否删除文件缓存
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        editor = preferences.edit();
+        int flag = preferences.getInt("Flag", -1);
+        if (flag == -1) {
+            editor.putInt("Flag", 1);
+            JSONParse();//由于数据比较少，直接解析所有JSON数据 存到本地
+            editor.apply();
+        } else if (flag % 5 == 0) {
+            JSONParse();//由于数据比较少，直接解析所有JSON数据 存到本地
+            editor.putInt("Flag", ++flag);
+            Log.i("Test", "network::::" + flag);
+            editor.apply();
+        } else {
+            JSONParseFromFile();//从本地获取
+            editor.putInt("Flag", ++flag);
+            Log.i("Test", "file::::" + flag);
+            editor.apply();
+        }
+
+
+
+        //判断是否删除图片缓存
+        if (NetworkJudge.isWifiEnabled(getApplicationContext())) {
+            try {
+                String cachePath;
+                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                        || !Environment.isExternalStorageRemovable()) {
+                    if (getApplicationContext().getExternalCacheDir() != null) {
+                        cachePath = getApplicationContext().getExternalCacheDir().getPath();
+                        Log.i("Test", "SD");
+                    } else {
+                        throw new Exception("SD卡连接错误");
+                    }
+                } else {
+                    cachePath = getApplicationContext().getCacheDir().getPath();
+                }
+                File cacheDir = new File(cachePath + File.separator + "bitmap");
+                Log.i(AsyncImageLoader.TAG, "cache dir :　" + cacheDir);
+                if (cacheDir.exists()) {
+                    if ((flag - 1) % 15 == 0) {
+                        DiskLruCache.deleteContents(cacheDir);
+                        Log.i(AsyncImageLoader.TAG, "cache dir :　" + cacheDir);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(ReadyActivity.this, "当前无wifi连接", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+        //百度地图SDK初始化 必须在 setContentView 之前
+        SDKInitializer.initialize(getApplicationContext());
+
+        //百度定位初始化
+        BaiduLocate.InitContext(getApplicationContext());
+        BaiduLocate.getInstance().setMyLocateListener(new BaiduLocate.MyLocateListener() {
+            @Override
+            public void LocateCallBack(int flag, String city, String address) {
+                Log.e(BaiduLocate.TAG, "定位回调监听成功-----" + "address : " + address);
+                Log.i(TAG, "city : " + city);
+                BaiduLocate.getInstance().stopLocate();
+                handler.sendEmptyMessage(Constant.READY_GO);
+            }
+        });
+        BaiduLocate.getInstance().startLocate();
+
+        setContentView(R.layout.activity_ready);
+    }
 
     /**
      * 所有JSON解析
@@ -170,7 +176,9 @@ public class ReadyActivity extends Activity {
                         city.setId(object.getInt("id"));
                         Data.cityTableList.add(city);
                     }
-                    android.util.Log.i(TAG, "city number : " + Data.cityTableList.size());
+                    write(CityTableName, s);//写入缓存
+                    handler.sendEmptyMessage(Constant.READY_GO);
+                    Log.i(TAG, "city number : " + Data.cityTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析城市列表时出错");
                     e.printStackTrace();
@@ -201,7 +209,8 @@ public class ReadyActivity extends Activity {
                         placeTable.setLng(object.getDouble("lng"));
                         Data.placeTableList.add(placeTable);
                     }
-                    Log.e(TAG, "palce number : " + Data.placeTableList.size());
+                    write(PlaceTableName, s);//写入缓存
+                    Log.i(TAG, "palce number : " + Data.placeTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析difang列表时出错");
                     e.printStackTrace();
@@ -230,7 +239,8 @@ public class ReadyActivity extends Activity {
                         activityTable.setVid(object.getInt("vid"));
                         Data.activityTableList.add(activityTable);
                     }
-                    Log.e(TAG, "activity number : " + Data.activityTableList.size());
+                    write(ActivityTableName, s);//写入缓存
+                    Log.i(TAG, "activity number : " + Data.activityTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析活动列表时出错");
                     e.printStackTrace();
@@ -261,7 +271,8 @@ public class ReadyActivity extends Activity {
                         viewsTable.setFn(object.getInt("fn"));
                         Data.viewTableList.add(viewsTable);
                     }
-                    Log.e(TAG, "views number : " + Data.viewTableList.size());
+                    write(ViewsTableName, s);//写入缓存
+                    Log.i(TAG, "views number : " + Data.viewTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析views列表时出错");
                     e.printStackTrace();
@@ -290,7 +301,8 @@ public class ReadyActivity extends Activity {
                         floorPlanTable.setId(object.getInt("id"));
                         Data.floorPlanTableList.add(floorPlanTable);
                     }
-                    Log.e(TAG, "floorplan number : " + Data.floorPlanTableList.size());
+                    write(FloorPlanTableName, s);//写入缓存
+                    Log.i(TAG, "floorplan number : " + Data.floorPlanTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析floorplan列表时出错");
                     e.printStackTrace();
@@ -317,7 +329,8 @@ public class ReadyActivity extends Activity {
                         nodesContact.setId(object.getInt("id"));
                         Data.nodesContactTableList.add(nodesContact);
                     }
-                    Log.e(TAG, "NodesContact number : " + Data.nodesContactTableList.size());
+                    write(NodesContactTableName, s);//写入缓存
+                    Log.i(TAG, "NodesContact number : " + Data.nodesContactTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析nodesContactList列表时出错" + e.toString());
                     e.printStackTrace();
@@ -330,6 +343,194 @@ public class ReadyActivity extends Activity {
         new JSONHttp(url, new JSONHttp.JSONHttpReturn() {
             @Override
             public void JSONReturn(String s) {
+                try {
+                    Data.activityTableList.clear();
+                    Data.cityTableList.clear();
+                    Data.floorPlanTableList.clear();
+                    Data.viewTableList.clear();
+                    Data.nodesContactTableList.clear();
+                    Data.nodesTableList.clear();
+                    Data.placeTableList.clear();
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONArray arrays = jsonObject.getJSONArray("nodes");
+                    Data.nodesTableList.clear();
+                    for (int i = 0; i < arrays.length(); i++) {
+                        NodesTable nodesTable = new NodesTable();
+                        JSONObject object = arrays.getJSONObject(i);
+                        nodesTable.setX(object.getInt("x"));
+                        nodesTable.setPid(object.getInt("pid"));
+                        nodesTable.setY(object.getInt("y"));
+                        nodesTable.setN(object.getInt("n"));
+                        nodesTable.setFn(object.getInt("fn"));
+                        nodesTable.setId(object.getInt("id"));
+                        Data.nodesTableList.add(nodesTable);
+                    }
+                    write(NodesTableName, s);//写入缓存
+                    Log.i(TAG, "Nodes number : " + Data.nodesTableList.size());
+                } catch (Exception e) {
+                    Log.e(TAG, "解析nodes列表时出错" + e.toString());
+                }
+            }
+        }).start();
+    }
+
+    private void JSONParseFromFile() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Data.activityTableList.clear();
+                Data.cityTableList.clear();
+                Data.floorPlanTableList.clear();
+                Data.viewTableList.clear();
+                Data.nodesContactTableList.clear();
+                Data.nodesTableList.clear();
+                Data.placeTableList.clear();
+                //城市信息初始化
+                String s = read(CityTableName);
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONArray arrays = jsonObject.getJSONArray("city");
+                    Data.cityTableList.clear();
+                    for (int i = 0; i < arrays.length(); i++) {
+                        CityTable city = new CityTable();
+                        JSONObject object = arrays.getJSONObject(i);
+                        city.setName(object.getString("name"));
+                        city.setId(object.getInt("id"));
+                        Data.cityTableList.add(city);
+                    }
+                    Log.i(TAG, "city number : " + Data.cityTableList.size());
+                } catch (Exception e) {
+                    Log.e(TAG, "解析城市列表时出错");
+                    e.printStackTrace();
+                }
+
+                //地方信息初始化
+                s = read(PlaceTableName);
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONArray arrays = jsonObject.getJSONArray("place");
+                    Data.placeTableList.clear();
+                    for (int i = 0; i < arrays.length(); i++) {
+                        PlaceTable placeTable = new PlaceTable();
+                        JSONObject object = arrays.getJSONObject(i);
+                        placeTable.setName(object.getString("name"));
+                        placeTable.setId(object.getInt("id"));
+                        placeTable.setImage("http://indoor.onlylemi.com/" + object.getString("image"));
+                        placeTable.setVideo(object.getString("video"));
+                        placeTable.setIntro(object.getString("intro"));
+                        placeTable.setCid(object.getInt("cid"));
+                        placeTable.setLat(object.getDouble("lat"));
+                        placeTable.setLng(object.getDouble("lng"));
+                        Data.placeTableList.add(placeTable);
+                    }
+                    Log.i(TAG, "palce number : " + Data.placeTableList.size());
+                } catch (Exception e) {
+                    Log.e(TAG, "解析地方列表时出错");
+                    e.printStackTrace();
+                }
+
+                //活动信息初始化
+                s = read(ActivityTableName);
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONArray arrays = jsonObject.getJSONArray("activity");
+                    Data.activityTableList.clear();
+                    for (int i = 0; i < arrays.length(); i++) {
+                        ActivityTable activityTable = new ActivityTable();
+                        JSONObject object = arrays.getJSONObject(i);
+                        activityTable.setName(object.getString("name"));
+                        activityTable.setId(object.getInt("id"));
+                        activityTable.setImage(object.getString("image"));
+                        activityTable.setStartTime(object.getString("start_time"));
+                        activityTable.setEndTime(object.getString("end_time"));
+                        activityTable.setIntro(object.getString("intro"));
+                        activityTable.setVid(object.getInt("vid"));
+                        Data.activityTableList.add(activityTable);
+                    }
+                    write(ActivityTableName, s);//写入缓存
+                    Log.i(TAG, "activity number : " + Data.activityTableList.size());
+                } catch (Exception e) {
+                    Log.e(TAG, "解析活动列表时出错");
+                    e.printStackTrace();
+                }
+
+                //所有view信息初始化
+                s = read(ViewsTableName);
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONArray arrays = jsonObject.getJSONArray("views");
+                    Data.viewTableList.clear();
+                    for (int i = 0; i < arrays.length(); i++) {
+                        ViewsTable viewsTable = new ViewsTable();
+                        JSONObject object = arrays.getJSONObject(i);
+                        viewsTable.setName(object.getString("name"));
+                        viewsTable.setId(object.getInt("id"));
+                        viewsTable.setImage("http://indoor.onlylemi.com/" + object.getString("image"));
+                        viewsTable.setVideo(object.getString("video"));
+                        viewsTable.setIntro(object.getString("intro"));
+                        viewsTable.setX(object.getInt("x"));
+                        viewsTable.setY(object.getInt("y"));
+                        viewsTable.setPid(object.getInt("pid"));
+                        viewsTable.setFn(object.getInt("fn"));
+                        Data.viewTableList.add(viewsTable);
+                    }
+                    write(ViewsTableName, s);//写入缓存
+                    Log.i(TAG, "views number : " + Data.viewTableList.size());
+                } catch (Exception e) {
+                    Log.e(TAG, "解析views列表时出错");
+                    e.printStackTrace();
+                }
+
+                //所有floorplan信息初始化
+                s = read(FloorPlanTableName);
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONArray arrays = jsonObject.getJSONArray("floor_plan");
+                    Data.floorPlanTableList.clear();
+                    for (int i = 0; i < arrays.length(); i++) {
+                        FloorPlanTable floorPlanTable = new FloorPlanTable();
+                        JSONObject object = arrays.getJSONObject(i);
+                        floorPlanTable.setVenueid(object.getString("venueid"));
+                        floorPlanTable.setFloorid(object.getString("floorid"));
+                        floorPlanTable.setFloorplanid(object.getString("floorplanid"));
+                        floorPlanTable.setPid(object.getInt("pid"));
+                        floorPlanTable.setImage(object.getString("image"));
+                        floorPlanTable.setFn(object.getInt("fn"));
+                        floorPlanTable.setId(object.getInt("id"));
+                        Data.floorPlanTableList.add(floorPlanTable);
+                    }
+                    write(FloorPlanTableName, s);//写入缓存
+                    Log.i(TAG, "floorplan number : " + Data.floorPlanTableList.size());
+                } catch (Exception e) {
+                    Log.e(TAG, "解析floorplan列表时出错");
+                    e.printStackTrace();
+                }
+
+                //所有nodescontact信息初始化
+                s = read(NodesContactTableName);
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONArray arrays = jsonObject.getJSONArray("nodes_contact");
+                    Data.nodesContactTableList.clear();
+                    for (int i = 0; i < arrays.length(); i++) {
+                        NodesContactTable nodesContact = new NodesContactTable();
+                        JSONObject object = arrays.getJSONObject(i);
+                        nodesContact.setN1(object.getInt("n1"));
+                        nodesContact.setPid(object.getInt("pid"));
+                        nodesContact.setN2(object.getInt("n2"));
+                        nodesContact.setFn(object.getInt("fn"));
+                        nodesContact.setId(object.getInt("id"));
+                        Data.nodesContactTableList.add(nodesContact);
+                    }
+                    write(NodesContactTableName, s);//写入缓存
+                    Log.i(TAG, "NodesContact number : " + Data.nodesContactTableList.size());
+                } catch (Exception e) {
+                    Log.e(TAG, "解析nodesContactList列表时出错" + e.toString());
+                    e.printStackTrace();
+                }
+                //所有nodes信息初始化
+                s = read(NodesTableName);
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     JSONArray arrays = jsonObject.getJSONArray("nodes");
@@ -345,55 +546,14 @@ public class ReadyActivity extends Activity {
                         nodesTable.setId(object.getInt("id"));
                         Data.nodesTableList.add(nodesTable);
                     }
-                    Log.e(TAG, "Nodes number : " + Data.nodesTableList.size());
+                    write(NodesTableName, s);//写入缓存
+                    Log.i(TAG, "Nodes number : " + Data.nodesTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析nodes列表时出错" + e.toString());
                 }
             }
         }).start();
     }
-
-    private void JSONParseFromFile() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String s = read(ActivityTableName);
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    JSONArray arrays = jsonObject.getJSONArray("city");
-                    Data.cityTableList.clear();
-                    for (int i = 0; i < arrays.length(); i++) {
-                        CityTable city = new CityTable();
-                        JSONObject object = arrays.getJSONObject(i);
-                        city.setName(object.getString("name"));
-                        city.setId(object.getInt("id"));
-                        Data.cityTableList.add(city);
-                    }
-                    android.util.Log.i(TAG, "city number : " + Data.cityTableList.size());
-                } catch (Exception e) {
-                    Log.e(TAG, "解析城市列表时出错");
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    /**
-     * 清除文件缓存
-     */
-    private void clearCache() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            try {
-                File sdCardDir;
-                sdCardDir = Environment.getExternalStorageDirectory();
-                File dir = new File(getApplicationContext().getExternalCacheDir().getPath() + File.separator + DataFileName);
-                DiskLruCache.deleteContents(dir);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     /**
      * 初始化硬盘缓存
@@ -403,39 +563,54 @@ public class ReadyActivity extends Activity {
             String cache;
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
                     || !Environment.isExternalStorageRemovable()) {
-                cache = getApplicationContext().getExternalCacheDir().getPath();
-                Log.v("Test", "SD");
+                if (getApplicationContext().getExternalCacheDir() != null) {
+                    cache = getApplicationContext().getExternalCacheDir().getPath();
+                    Log.i("Test", "SD");
+                } else {
+                    throw new Exception("SD卡连接错误");
+                }
             } else {
                 cache = getApplicationContext().getCacheDir().getPath();
-                Log.v("Test", "mobilephone");
+                Log.i("Test", "mobilephone");
             }
-            cache = cache + File.separator + DataFileName;
+
+            /**
+             * SD卡数据缓存目录
+             */
+            String dataFileName = "indoor_data";
+
+            cache = cache + File.separator + dataFileName;
             File fileDir = new File(cache);
             if (!fileDir.exists()) {
-                fileDir.mkdirs();
-                Log.i("Test", "创建目录: " + fileDir.getAbsolutePath());
+                if (fileDir.mkdirs()) {
+                    Log.e("Test", "创建目录: " + fileDir.getAbsolutePath());
+                } else {
+                    Log.e("Test", "创建目录失败");
+                }
             } else {
-                Log.i("Test", "目录: " + fileDir.getAbsolutePath());
+                Log.e("Test", "目录: " + fileDir.getAbsolutePath());
             }
             diskLruCache = DiskLruCache.open(fileDir, getAppVersion(getApplicationContext()), 1, DISK_CACHE_DEFAULT_SIZE);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * 从缓存中读数据
+     *
+     * @param name 表名
+     * @return JSON数据串
+     */
     private String read(String name) {
         String s = "";
         StringBuilder stringBuilder = new StringBuilder("");
-        String name1 = diskLruCache.getDirectory() + File.separator + name;
-        name = hashKeyForDisk(name);
         try {
-            Log.i("Test", "result" + (diskLruCache.get(name) == null) + diskLruCache.isClosed());
             DiskLruCache.Snapshot snapshot = diskLruCache.get(name);
             if (snapshot != null) {
-                Log.e("Test", "start read: " + name1);
                 InputStream in = snapshot.getInputStream(0);
                 byte[] bytes = new byte[1024];
-                int length = 0;
+                int length;
                 while ((length = in.read(bytes)) > 0) {
                     stringBuilder.append(new String(bytes, 0, length));
                 }
@@ -449,53 +624,34 @@ public class ReadyActivity extends Activity {
         return s;
     }
 
+    /**
+     * 把数据写入缓存
+     *
+     * @param name    表名
+     * @param content JSON数据串
+     */
     private void write(String name, String content) {
         try {
-            String name1 = diskLruCache.getDirectory() + File.separator + name;
-            name = hashKeyForDisk(name);
             DiskLruCache.Editor editors = diskLruCache.edit(name);
             if (editor != null) {
-                Log.e("Test", "start write: " + name1);
-                Log.e("Test", "start write content : " + content);
                 OutputStream out = editors.newOutputStream(0);
                 byte[] bytes = content.getBytes();
                 out.write(bytes);
                 out.flush();
-                out.close();
                 editors.commit();
+                diskLruCache.flush();
             }
-            diskLruCache.flush();
-            Log.i("Test", "result====" + read(name) + name);
-            diskLruCache.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private String hashKeyForDisk(String key) {
-        String cacheKey;
-        try {
-            final MessageDigest mDigest = MessageDigest.getInstance("MD5");
-            mDigest.update(key.getBytes());
-            cacheKey = bytesToHexString(mDigest.digest());
-        } catch (NoSuchAlgorithmException e) {
-            cacheKey = String.valueOf(key.hashCode());
-        }
-        return cacheKey;
-    }
-
-    private String bytesToHexString(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bytes.length; i++) {
-            String hex = Integer.toHexString(0xFF & bytes[i]);
-            if (hex.length() == 1) {
-                sb.append('0');
-            }
-            sb.append(hex);
-        }
-        return sb.toString();
-    }
-
+    /**
+     * 当前APP版本
+     *
+     * @param context context对象
+     * @return 版本号
+     */
     private int getAppVersion(Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
