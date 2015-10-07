@@ -160,7 +160,6 @@ public class ReadyActivity extends Activity {
             @Override
             public void JSONReturn(String s) {
                 try {
-                    write(ActivityTableName, s);
                     JSONObject jsonObject = new JSONObject(s);
                     JSONArray arrays = jsonObject.getJSONArray("city");
                     Data.cityTableList.clear();
@@ -225,7 +224,8 @@ public class ReadyActivity extends Activity {
                         activityTable.setName(object.getString("name"));
                         activityTable.setId(object.getInt("id"));
                         activityTable.setImage(object.getString("image"));
-                        activityTable.setTime(object.getString("time"));
+                        activityTable.setStartTime(object.getString("start_time"));
+                        activityTable.setEndTime(object.getString("end_time"));
                         activityTable.setIntro(object.getString("intro"));
                         activityTable.setVid(object.getInt("vid"));
                         Data.activityTableList.add(activityTable);
