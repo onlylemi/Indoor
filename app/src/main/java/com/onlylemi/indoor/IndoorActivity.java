@@ -1,6 +1,5 @@
 package com.onlylemi.indoor;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
@@ -9,16 +8,21 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.provider.Settings;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AbsoluteLayout;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,30 +37,41 @@ import com.indooratlas.android.IndoorAtlasFactory;
 import com.indooratlas.android.IndoorAtlasListener;
 import com.indooratlas.android.ResultCallback;
 import com.indooratlas.android.ServiceState;
-import com.onlylemi.camera.CameraActivity;
 import com.onlylemi.camera.PreviewSurface;
 import com.onlylemi.camera.RouteSurface;
+import com.onlylemi.dr.listViewAnimation.ScaleInAnimationAdapter;
 import com.onlylemi.map.MapView;
 import com.onlylemi.map.MapViewListener;
 import com.onlylemi.map.core.PMark;
+import com.onlylemi.map.overlay.BitmapOverlay;
 import com.onlylemi.map.overlay.LocationOverlay;
 import com.onlylemi.map.overlay.MarkOverlay;
 import com.onlylemi.map.overlay.RouteOverlay;
+import com.onlylemi.map.utils.AssistMath;
 import com.onlylemi.parse.JSONParseTable;
+import com.onlylemi.parse.JSONUpload;
+import com.onlylemi.parse.info.ActivityTable;
 import com.onlylemi.utils.Assist;
 import com.onlylemi.utils.Constants;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.security.Security;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by only乐秘 on 2015-08-23.
  */
 public class IndoorActivity extends BaseActivity implements View.OnClickListener, IndoorAtlasListener,
-        MapViewListener, SensorEventListener, MarkOverlay.MarkIsClickListener {
+        MapViewListener, SensorEventListener, MarkOverlay.MarkIsClickListener, AdapterView.OnItemClickListener {
 
-    public static final String TAG = "IndoorActivity";
+    public static final String TAG = "IndoorActivity:";
 
     public static String apiVenueId; // 地点id
     public static String apiFloorId; // 楼层id
@@ -67,6 +82,8 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     public static List<PMark> views; //景点集
     public static List<PointF> nodes; //结点集
     public static List<PointF> nodesContact; //结点关系集
+    public static List<ActivityTable> viewsActivityList; //活动列表
+    private List<Integer> viewsActivityVidList; //活动 views id
 
     //头部
     private RelativeLayout layout_action;
@@ -87,6 +104,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     private LocationOverlay locationOverlay;
     private RouteOverlay routeOverlay;
     private MarkOverlay markOverlay;
+    private BitmapOverlay bitmapOverlay;
 
     //加载
     private RelativeLayout progress;
@@ -114,6 +132,12 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     private RouteSurface routeCameraSurface;
 
     private boolean isMapViewSmall = false;
+
+    private String deviceId = "";
+
+    //activity list
+    private ListView listViewActivity;
+    private ViewsActivityAdapter viewsActivityAdapter;
 
     @Override
     public void setContentView() {
@@ -145,6 +169,14 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         previewCameraSurface = (PreviewSurface) findViewById(R.id.preview_camera_surface);
         routeCameraSurface = (RouteSurface) findViewById(R.id.route_camera_surface);
 
+        //侧边商家活动
+        viewsActivityAdapter = new ViewsActivityAdapter(this);
+        listViewActivity = (ListView) findViewById(R.id.views_activity_list);
+        ScaleInAnimationAdapter scaleInAnimationAdapter = new ScaleInAnimationAdapter(viewsActivityAdapter, 0f);
+        scaleInAnimationAdapter.setListView(listViewActivity);
+        listViewActivity.setAdapter(scaleInAnimationAdapter);
+
+        viewsActivityVidList = viewsActivityAdapter.getViewsActivityVidList();
     }
 
     @Override
@@ -153,7 +185,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         mapView.registerMapViewListener(this);
         imgPosition.setOnClickListener(this);
         imgCameraPosition.setOnClickListener(this);
-
+        listViewActivity.setOnItemClickListener(this);
 
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL);
@@ -176,6 +208,8 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         views = JSONParseTable.getViewsList(pid, fn);
         nodes = JSONParseTable.getNodesList(pid, fn);
         nodesContact = JSONParseTable.getNodesContactList(pid, fn);
+
+        deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         initIndoorAtlas();
         loadMapView();
@@ -258,7 +292,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         Log.i(TAG, "initIndoorAtlas start");
 
         try {
-            mIndoorAtlas = IndoorAtlasFactory.createIndoorAtlas(this, this,
+            mIndoorAtlas = IndoorAtlasFactory.createIndoorAtlas(this.getApplicationContext(), this,
                     Constants.INDOORATLAS_API_KEY, Constants.INDOORATLAS_API_SECRET);
             Log.i(TAG, "mIndoorAtlas 创建");
             togglePositioning();
@@ -452,11 +486,15 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
                 lp.height = mapView.getHeight() / 3;
                 lp.width = mapView.getWidth() / 3;
                 cameraRouteLayout.setVisibility(View.VISIBLE);
+                previewCameraSurface.setVisibility(View.VISIBLE);
+                routeCameraSurface.setVisibility(View.VISIBLE);
 //                mapView.getController().setCurrentZoomValue(0.5f);
             } else {
                 lp.height = mapView.getHeight() * 3;
                 lp.width = mapView.getWidth() * 3;
                 cameraRouteLayout.setVisibility(View.GONE);
+                previewCameraSurface.setVisibility(View.GONE);
+                routeCameraSurface.setVisibility(View.GONE);
             }
             isMapViewSmall = !isMapViewSmall;
             mapView.setLayoutParams(lp);
@@ -468,6 +506,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         } else if (v == mark_route) {
             markPop.dismiss();
             List<Integer> routeList = new ArrayList<>();
+
             PointF target = new PointF(views.get(markOverlay.getNum()).x, views.get(markOverlay.getNum()).y);
 
             routeList = com.onlylemi.map.utils.Assist.getShortestDistanceBetweenTwoPoints(locationOverlay.getPosition(),
@@ -486,9 +525,15 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onMapLoadComplete() {
+        //活动层
+        bitmapOverlay = new BitmapOverlay(mapView);
+        bitmapOverlay.setViews(views);
+        bitmapOverlay.setViewsActivityVidList(viewsActivityVidList);
+        mapView.getOverLays().add(bitmapOverlay);
+
         // 标记点层
         markOverlay = new MarkOverlay(mapView, 20);
-        markOverlay.setMarkIsClickListener(IndoorActivity.this);
+        markOverlay.setMarkIsClickListener(this);
         markOverlay.setMarks(views);
         mapView.getOverLays().add(markOverlay);
 
@@ -522,11 +567,40 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         Log.i(TAG, "onServiceUpdate");
 
         if (mapView.isMapLoadFinsh()) {
+            double lat = state.getGeoPoint().getLatitude();
+            double lon = state.getGeoPoint().getLongitude();
             int i = state.getImagePoint().getI();
             int j = state.getImagePoint().getJ();
-            Log.i(TAG, "i=" + i + " j=" + j);
+            double x = state.getMetricPoint().getX();
+            double y = state.getMetricPoint().getY();
+            double heading = state.getHeadingDegrees();
+            double uncertainty = state.getUncertainty();
+            long roundtrip = state.getRoundtrip();
+            int pid = 2;
+            int fn = 1;
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            //更新坐标
             locationOverlay.setPosition(new PointF(i, j));
             mapView.refresh();
+
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("deviceId", deviceId));
+            params.add(new BasicNameValuePair("lat", Double.toString(lat)));
+            params.add(new BasicNameValuePair("lon", Double.toString(lon)));
+            params.add(new BasicNameValuePair("i", Integer.toString(i)));
+            params.add(new BasicNameValuePair("j", Integer.toString(j)));
+            params.add(new BasicNameValuePair("x", Double.toString(x)));
+            params.add(new BasicNameValuePair("y", Double.toString(y)));
+            params.add(new BasicNameValuePair("heading", Double.toString(heading)));
+            params.add(new BasicNameValuePair("uncertainty", Double.toString(uncertainty)));
+            params.add(new BasicNameValuePair("roundtrip", Long.toString(roundtrip)));
+            params.add(new BasicNameValuePair("time", sd.format(new Date().getTime())));
+            params.add(new BasicNameValuePair("pid", Integer.toString(pid)));
+            params.add(new BasicNameValuePair("fn", Integer.toString(fn)));
+            //上传
+//            JSONObject job = JSONUpload.makeHttpRequest("POST", params);
+//            Log.e(TAG, "job:" + job.toString());
         }
 
     }
@@ -573,7 +647,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onCalibrationStatus(CalibrationState calibrationState) {
-        Log.i(TAG, "onCalibrationStatus");
+        Log.i(TAG, "onCalibrationStatus, percentage" + calibrationState.getPercentage());
     }
 
     @Override
@@ -670,7 +744,11 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         mark_intro = (LinearLayout) view.findViewById(R.id.mark_intro);
         mark_route = (LinearLayout) view.findViewById(R.id.mark_route);
 
+        float distance = (Math.abs(views.get(num).x - locationOverlay.getPosition().x) +
+                Math.abs(views.get(num).y - locationOverlay.getPosition().y)) / 25;
+
         mark_name.setText(views.get(num).name);
+        mark_distance.setText(distance + "米");
 
         mark_intro.setOnClickListener(this);
         mark_route.setOnClickListener(this);
@@ -685,5 +763,26 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
         markPop.setAnimationStyle(R.style.MarkPop);
         markPop.showAsDropDown(imgPosition);
+    }
+
+
+    //AdapterView.OnItemClickListener
+    //=============================================================================
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ActivityTable activityTable = (ActivityTable) viewsActivityAdapter.getItem(position);
+
+        if (mapView.isMapLoadFinsh() && !isMapViewSmall) {
+            for (int i = 0; i < views.size(); i++) {
+                if (views.get(i).id == activityTable.getVid()) {
+                    Log.i(TAG, views.get(i).name + " " + views.get(i).id + " " + activityTable.getVid());
+                    mapView.getController().setMapCenterWithPoint(new PointF(views.get(i).x,
+                            views.get(i).y));
+                    mapView.refresh();
+                    break;
+                }
+            }
+        }
     }
 }

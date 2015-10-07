@@ -8,59 +8,73 @@
 
     <include layout="@layout/include_action_bar" />
 
-    <RelativeLayout
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.0">
+        android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/camera_route"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
 
-            <com.onlylemi.camera.PreviewSurface
-                android:id="@+id/preview_camera_surface"
+            <RelativeLayout
+                android:id="@+id/camera_route"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:visibility="gone">
 
-            <com.onlylemi.camera.RouteSurface
-                android:id="@+id/route_camera_surface"
+                <com.onlylemi.camera.PreviewSurface
+                    android:id="@+id/preview_camera_surface"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <com.onlylemi.camera.RouteSurface
+                    android:id="@+id/route_camera_surface"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+
+            <com.onlylemi.map.MapView
+                android:id="@+id/mapview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"></com.onlylemi.map.MapView>
+
+            <ImageView
+                android:id="@+id/position_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="130dip"
+                android:layout_marginLeft="20dip"
+                android:src="@drawable/position_slector" />
+
+            <ImageView
+                android:id="@+id/camera_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dip"
+                android:layout_marginTop="30dip"
+                android:src="@drawable/position_slector" />
+
+            <include layout="@layout/include_no_data" />
+
+            <include layout="@layout/include_progress" />
 
         </RelativeLayout>
 
+        <ListView
+            android:id="@+id/views_activity_list"
+            android:layout_width="240dip"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="@color/custom_test_one"
+            android:divider="@color/custom_test_one"
+            android:footerDividersEnabled="false"></ListView>
 
-
-        <com.onlylemi.map.MapView
-            android:id="@+id/mapview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></com.onlylemi.map.MapView>
-
-        <ImageView
-            android:id="@+id/position_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="130dip"
-            android:layout_marginLeft="20dip"
-            android:src="@drawable/position_slector" />
-
-        <ImageView
-            android:id="@+id/camera_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dip"
-            android:layout_marginTop="30dip"
-            android:src="@drawable/position_slector" />
-
-        <include layout="@layout/include_no_data" />
-
-        <include layout="@layout/include_progress" />
-
-    </RelativeLayout>
-
+    </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>
