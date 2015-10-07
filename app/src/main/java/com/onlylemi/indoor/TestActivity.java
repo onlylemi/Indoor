@@ -1,11 +1,16 @@
 package com.onlylemi.indoor;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
@@ -16,6 +21,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +37,7 @@ import android.widget.TextView;
 
 import com.onlylemi.camera.PreviewSurface;
 import com.onlylemi.camera.RouteSurface;
+import com.onlylemi.indoor.dialog.AddViewsActivityDialog;
 import com.onlylemi.map.MapView;
 import com.onlylemi.map.MapViewListener;
 import com.onlylemi.map.core.PMark;
@@ -38,6 +45,7 @@ import com.onlylemi.map.overlay.LocationOverlay;
 import com.onlylemi.map.overlay.MarkOverlay;
 import com.onlylemi.map.overlay.RouteOverlay;
 import com.onlylemi.map.utils.Assist;
+import com.onlylemi.map.utils.AssistMath;
 import com.onlylemi.parse.JSONParseTable;
 
 public class TestActivity extends AppCompatActivity implements OnClickListener,
@@ -57,6 +65,8 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
     private LocationOverlay locationOverlay;
     private RouteOverlay routeOverlay;
     private MarkOverlay markOverlay;
+
+    private List<Integer> routeList; //路线list
 
     private PopupWindow markPop;
 
@@ -104,7 +114,8 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
         previewSurface = (PreviewSurface) findViewById(R.id.preview_surface1);
         routeSurface = (RouteSurface) findViewById(R.id.route_camera_surface1);
 
-        final Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().getPath() + "/indoor/tangjiu.png");
+//        final Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().getPath() + "/indoor/tangjiu.png");
+        final Bitmap bitmap = getImageFromAssetsFile("tangjiu.png");
         mapView.loadMap(com.onlylemi.utils.Assist.getPictureFromBitmap(bitmap));
 
         mapView.registerMapViewListener(new MapViewListener() {
@@ -188,7 +199,7 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
                     }
                 }
 
-                List<Integer> routeList = new ArrayList<Integer>();
+                routeList = new ArrayList<>();
 //                routeList = Assist.getShortestPathBetweenTwoPoints(start,
 //                        end, nodes, nodesContact);
                 int[] points = {start % 73, (start - 10) % 73, (start - 20) % 73, (start - 30) % 73, (start - 5) % 73, (start + 10) % 73, (start + 20) % 73};
@@ -219,10 +230,26 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
         button2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent().setClass(TestActivity.this, IndoorActivity.class));
+                //startActivity(new Intent().setClass(TestActivity.this, IndoorActivity.class));
+                AddViewsActivityDialog dialog = new AddViewsActivityDialog(TestActivity.this);
+                dialog.show();
+
             }
         });
 
+    }
+
+    private Bitmap getImageFromAssetsFile(String fileName) {
+        Bitmap image = null;
+        AssetManager am = getResources().getAssets();
+        try {
+            InputStream is = am.open(fileName);
+            image = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
 
@@ -300,7 +327,7 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
 
         } else if (v == mark_route) {
             markPop.dismiss();
-            List<Integer> routeList = new ArrayList<>();
+            routeList = new ArrayList<>();
             PointF target = new PointF(views.get(markOverlay.getNum()).x, views.get(markOverlay.getNum()).y);
 
             routeList = Assist.getShortestDistanceBetweenTwoPoints(locationOverlay.getPosition(),
@@ -374,20 +401,26 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onRestart() {
         super.onRestart();
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-                SensorManager.SENSOR_DELAY_NORMAL);
+        if (sensorManager != null) {
+            sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                    SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        sensorManager.unregisterListener(this);
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
+        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        sensorManager.unregisterListener(this);
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
+        }
     }
 
     //========================SensorEventListener=================================
@@ -403,6 +436,7 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
             locationOverlay.setIndicatorCircleRotateDegree(degree);
             //mapView.getController().setCurrentRotationDegrees(mapDegree + degree);
             locationOverlay.setIndicatorArrowRotateDegree(mapDegree + mapView.getCurrentRotateDegrees() - degree);
+
             mapView.refresh();
         }
     }

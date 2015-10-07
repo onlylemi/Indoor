@@ -295,7 +295,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
             mIndoorAtlas = IndoorAtlasFactory.createIndoorAtlas(this.getApplicationContext(), this,
                     Constants.INDOORATLAS_API_KEY, Constants.INDOORATLAS_API_SECRET);
             Log.i(TAG, "mIndoorAtlas 创建");
-            togglePositioning();
+            //togglePositioning();
         } catch (IndoorAtlasException e) {
             e.printStackTrace();
         }

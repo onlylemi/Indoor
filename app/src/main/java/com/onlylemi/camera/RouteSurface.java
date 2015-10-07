@@ -42,6 +42,8 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
     private Bitmap bmp3DStraight;
     private Bitmap bmp3DStraightConvert;
 
+    private float rotateDegree = 0;
+
     public RouteSurface(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -204,5 +206,13 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
         Bitmap convertBmp = Bitmap.createBitmap(bmp, 0, 0, w, h, matrix, true);
 
         return convertBmp;
+    }
+
+    public float getRotateDegree() {
+        return rotateDegree;
+    }
+
+    public void setRotateDegree(float rotateDegree) {
+        this.rotateDegree = rotateDegree;
     }
 }

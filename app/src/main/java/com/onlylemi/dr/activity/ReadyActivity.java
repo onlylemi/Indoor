@@ -47,7 +47,7 @@ public class ReadyActivity extends Activity {
 
 
     //表名列表
-    private final String CityTableName = "CityTable";
+    private final String CityTableName = CityTable.class.getSimpleName();
     private final String FloorPlanTableName = "FloorPlanTable";
     private final String NodesContactTableName = "NodesContactTable";
     private final String PlaceTableName = "PlaceTable";
@@ -80,8 +80,6 @@ public class ReadyActivity extends Activity {
         };
 
 
-
-
         initDiskCache();
         //是否删除文件缓存
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
@@ -102,7 +100,6 @@ public class ReadyActivity extends Activity {
             Log.i("Test", "file::::" + flag);
             editor.apply();
         }
-
 
 
         //判断是否删除图片缓存
@@ -134,7 +131,6 @@ public class ReadyActivity extends Activity {
         } else {
             Toast.makeText(ReadyActivity.this, "当前无wifi连接", Toast.LENGTH_SHORT).show();
         }
-
 
 
         //百度地图SDK初始化 必须在 setContentView 之前

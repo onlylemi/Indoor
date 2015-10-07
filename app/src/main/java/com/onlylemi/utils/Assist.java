@@ -1,5 +1,6 @@
 package com.onlylemi.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
@@ -18,6 +19,11 @@ public class Assist {
                         .getHeight()), null);
         picture.endRecording();
         return picture;
+    }
+
+    public static int dip2px(Context context, float dipValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (scale * dipValue + 0.5f);
     }
 
 }
