@@ -37,7 +37,6 @@ import java.security.NoSuchAlgorithmException;
  * 图片异步加载类
  *
  * @author Leslie.Fang
- *
  */
 public class AsyncImageLoader {
 
@@ -150,6 +149,7 @@ public class AsyncImageLoader {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 // 先从内存中拿
                 Bitmap bitmap = getBitmapFromMem(imageUrl);
                 if (bitmap != null) {
@@ -163,6 +163,7 @@ public class AsyncImageLoader {
                     });
                     return;
                 }
+
                 // 再从文件中找
                 bitmap = getBitmapFromDisk(imageUrl);
                 if (bitmap != null) {
@@ -192,12 +193,6 @@ public class AsyncImageLoader {
                 }
             }
         }).start();
-
-
-
-
-
-
         return null;
     }
 
@@ -273,9 +268,9 @@ public class AsyncImageLoader {
                     out.write(b);
                 }
                 return true;
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 e.printStackTrace();
-            }catch (final IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             } finally {
                 if (urlConnection != null) {
