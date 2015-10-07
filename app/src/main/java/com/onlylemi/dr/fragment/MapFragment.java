@@ -201,6 +201,16 @@ public class MapFragment extends Fragment implements BaiduMap.OnMarkerClickListe
     }
 
     /**
+     * 栓换地图模式
+     */
+    public void switchModel() {
+        if (baiduMap.getMapType() == BaiduMap.MAP_TYPE_SATELLITE) {
+            baiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+        }else {
+            baiduMap.setMapType(BaiduMap.MAP_TYPE_SATELLITE);
+        }
+    }
+    /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that

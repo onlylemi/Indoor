@@ -2,5 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.onlylemi.dr.activity.MainActivity">
-
+    <item
+        android:id="@+id/map_switch"
+        android:title="切换模式"
+        app:showAsAction="never"/>
 </menu>

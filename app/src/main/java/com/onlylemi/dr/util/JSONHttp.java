@@ -41,7 +41,6 @@ public class JSONHttp extends Thread {
 
             while ((string = reader.readLine()) != null) {
                 buffer.append(string);
-
             }
             result = buffer.toString();
             jsonHttpReturn.JSONReturn(result);
