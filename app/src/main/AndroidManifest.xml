@@ -30,7 +30,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="OGip13oacyM7s6xIaVMhYmzm" />
+            android:value="ltsrbYntYp84UpdG1aTgNsGl" />
 
         <activity
             android:name="com.onlylemi.dr.activity.ReadyActivity"
@@ -39,15 +39,14 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name="com.onlylemi.dr.activity.MainActivity"
-            android:label="@string/app_name"
-           />
+            android:label="@string/app_name" />
         <activity
             android:name="com.onlylemi.indoor.TestActivity"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name">
+        </activity>
         <activity
             android:name="com.onlylemi.indoor.IndoorActivity"
             android:label="@string/app_name"></activity>

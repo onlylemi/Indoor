@@ -11,60 +11,90 @@ import android.widget.Toast;
 import com.onlylemi.indoor.R;
 import com.onlylemi.map.MapView;
 import com.onlylemi.map.core.MapBaseOverlay;
+import com.onlylemi.map.core.PMark;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BitmapOverlay extends MapBaseOverlay {
 
-	private MapView mapView;
-	private int x = 200;
-	private int y = 300;
-	private Bitmap mBitmap;
+    public final static String TAG = "BitmapOverlay:";
 
-	public BitmapOverlay(MapView mapView) {
-		initLayer(mapView);
-	}
+    private MapView mapView;
+    private List<PMark> views; //view集
+    private List<Integer> viewsActivityVidList; //活动views id
+    private Bitmap mBitmap;
 
-	private void initLayer(MapView mapView) {
-		this.mapView = mapView;
-		mBitmap = BitmapFactory.decodeResource(mapView.getResources(),
-				R.mipmap.ic_launcher);
-	}
+    private Paint paint;
 
-	@Override
-	public void onDestroy() {
+    public BitmapOverlay(MapView mapView) {
+        initLayer(mapView);
+    }
 
-	}
+    private void initLayer(MapView mapView) {
+        this.mapView = mapView;
+        mBitmap = BitmapFactory.decodeResource(mapView.getResources(),
+                R.mipmap.icon_views_activity);
+        this.paint = new Paint();
+        this.paint.setAntiAlias(true);
+        this.paint.setStyle(Paint.Style.FILL_AND_STROKE);
 
-	@Override
-	public void onPause() {
+        viewsActivityVidList = new ArrayList<>();
+    }
 
-	}
+    @Override
+    public void onDestroy() {
 
-	@Override
-	public void onResume() {
+    }
 
-	}
+    @Override
+    public void onPause() {
 
-	@Override
-	public void onTouch(MotionEvent event) {
-		float[] mapCoordinate = mapView.getMapCoordinateWithScreenCoordinate(
-				event.getX(), event.getY());
-		if (mapCoordinate[0] >= x && mapCoordinate[0] <= x + mBitmap.getWidth()
-				&& mapCoordinate[1] >= y
-				&& mapCoordinate[1] <= y + mBitmap.getHeight()) {
-			Toast.makeText(mapView.getContext(), "Clicked on bitmap",
-					Toast.LENGTH_LONG).show();
-		}
-	}
+    }
 
-	@Override
-	public void draw(Canvas canvas, Matrix matrix, float currentZoom,
-			float currentRotateDegrees) {
-		canvas.save();
-		if (isVisible) {
-			canvas.setMatrix(matrix);
+    @Override
+    public void onResume() {
 
-			canvas.drawBitmap(mBitmap, x, y, new Paint(Paint.ANTI_ALIAS_FLAG));
-		}
-		canvas.restore();
-	}
+    }
+
+    @Override
+    public void onTouch(MotionEvent event) {
+        float[] mapCoordinate = mapView.getMapCoordinateWithScreenCoordinate(
+                event.getX(), event.getY());
+        /*if (mapCoordinate[0] >= x && mapCoordinate[0] <= x + mBitmap.getWidth()
+                && mapCoordinate[1] >= y
+                && mapCoordinate[1] <= y + mBitmap.getHeight()) {
+            Toast.makeText(mapView.getContext(), "Clicked on bitmap",
+                    Toast.LENGTH_LONG).show();
+        }*/
+    }
+
+    @Override
+    public void draw(Canvas canvas, Matrix matrix, float currentZoom,
+                     float currentRotateDegrees) {
+        canvas.save();
+        if (isVisible && views != null) {
+            //canvas.setMatrix(matrix);
+            for (int i = 0; i < views.size(); i++) {
+                for (int j = 0; j < viewsActivityVidList.size(); j++) {
+                    if (views.get(i).id == viewsActivityVidList.get(j)) {
+                        float goal[] = {views.get(i).x, views.get(i).y};
+                        matrix.mapPoints(goal);
+                        canvas.drawBitmap(mBitmap, goal[0] - mBitmap.getWidth() / 2, goal[1]
+                                - mBitmap.getHeight(), paint);
+                        break;
+                    }
+                }
+            }
+        }
+        canvas.restore();
+    }
+
+    public void setViews(List<PMark> views) {
+        this.views = views;
+    }
+
+    public void setViewsActivityVidList(List<Integer> viewsActivityVidList) {
+        this.viewsActivityVidList = viewsActivityVidList;
+    }
 }

@@ -222,7 +222,9 @@ public class JSONParseTable {
                     Log.i(TAG, jsonArray.toString());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jo = jsonArray.optJSONObject(i);
-                        views.add(new PMark(Integer.parseInt(jo.getString("x")), Integer.parseInt(jo.getString("y")), jo.getString("name")));
+                        views.add(new PMark(Float.parseFloat(jo.getString("x")),
+                                Float.parseFloat(jo.getString("y")), jo.getString("name"),
+                                Integer.parseInt((jo.getString("id")))));
                     }
 
                 } catch (JSONException e) {

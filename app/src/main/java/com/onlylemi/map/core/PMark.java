@@ -10,14 +10,16 @@ public class PMark {
     public float x;
     public float y;
     public String name;
+    public int id;
 
     public PMark() {
     }
 
-    public PMark(float x, float y, String name) {
+    public PMark(float x, float y, String name, int id) {
         this.x = x;
         this.y = y;
         this.name = name;
+        this.id = id;
     }
 
     @Override
