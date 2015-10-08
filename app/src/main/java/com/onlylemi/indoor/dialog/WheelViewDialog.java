@@ -12,6 +12,7 @@ import com.onlylemi.indoor.R;
 import com.onlylemi.view.WheelView;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by only乐秘 on 2015-10-07.
@@ -32,7 +33,7 @@ public class WheelViewDialog extends Dialog implements View.OnClickListener, Whe
     private int selectedIndex;
     private String item;
 
-    public WheelViewDialog(Context context) {
+    public WheelViewDialog(Context context, List<String> items) {
         super(context);
 
         this.context = context;
@@ -40,7 +41,7 @@ public class WheelViewDialog extends Dialog implements View.OnClickListener, Whe
         View view = LayoutInflater.from(context).inflate(R.layout.wheel_view, null);
         wv = (WheelView) view.findViewById(R.id.wheel_view_wv);
         wv.setOffset(2);
-        wv.setItems(Arrays.asList(PLANETS));
+        wv.setItems(items);
         wv.setSeletion(3);
         okBut = (Button) view.findViewById(R.id.select_view_ok);
         cancleBut = (Button) view.findViewById(R.id.select_view_cancle);
@@ -64,7 +65,7 @@ public class WheelViewDialog extends Dialog implements View.OnClickListener, Whe
     public void onClick(View v) {
         if (v == okBut) {
             if (listener != null) {
-                listener.onOk(selectedIndex, item);
+                listener.onOk(selectedIndex - wv.getOffset(), item);
             }
             this.cancel();
         } else if (v == cancleBut) {
@@ -81,7 +82,7 @@ public class WheelViewDialog extends Dialog implements View.OnClickListener, Whe
      * 点击ok之后的回调方法
      */
     public interface OnClickOkListener {
-        void onOk(int selectedIndex, String item);
+        void onOk(int position, String item);
     }
 
 }

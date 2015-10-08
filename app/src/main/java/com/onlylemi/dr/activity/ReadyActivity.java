@@ -21,6 +21,7 @@ import com.onlylemi.dr.util.DiskLruCache;
 import com.onlylemi.dr.util.JSONHttp;
 import com.onlylemi.dr.util.NetworkJudge;
 import com.onlylemi.indoor.R;
+import com.onlylemi.indoor.TestActivity;
 import com.onlylemi.parse.Data;
 import com.onlylemi.parse.info.ActivityTable;
 import com.onlylemi.parse.info.CityTable;

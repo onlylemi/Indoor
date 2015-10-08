@@ -104,8 +104,8 @@ public class ActivityTable extends BaseTable {
                 "\"id\":" + "\"" + id + "\"" +
                 ",\"name\":" + "\"" + name + "\"" +
                 ",\"image\":" + "\"" + image + "\"" +
-                ",\"time\":" + "\"" + startTime + "\"" +
-                ",\"time\":" + "\"" + endTime + "\"" +
+                ",\"start_time\":" + "\"" + startTime + "\"" +
+                ",\"end_time\":" + "\"" + endTime + "\"" +
                 ",\"intro\":" + "\"" + intro + "\"" +
                 ",\"vid\":" + "\"" + vid + "\"" +
                 "}";

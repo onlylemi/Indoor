@@ -21,6 +21,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -231,7 +232,7 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
             @Override
             public void onClick(View v) {
                 //startActivity(new Intent().setClass(TestActivity.this, IndoorActivity.class));
-                AddViewsActivityDialog dialog = new AddViewsActivityDialog(TestActivity.this);
+                AddViewsActivityDialog dialog = new AddViewsActivityDialog(TestActivity.this, views, new Handler());
                 dialog.show();
 
             }
