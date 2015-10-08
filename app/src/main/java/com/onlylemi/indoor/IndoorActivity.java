@@ -51,6 +51,7 @@ import com.onlylemi.map.utils.AssistMath;
 import com.onlylemi.parse.JSONParseTable;
 import com.onlylemi.parse.JSONUpload;
 import com.onlylemi.parse.info.ActivityTable;
+import com.onlylemi.parse.info.UserPositionTable;
 import com.onlylemi.utils.Assist;
 import com.onlylemi.utils.Constants;
 
@@ -295,7 +296,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
             mIndoorAtlas = IndoorAtlasFactory.createIndoorAtlas(this.getApplicationContext(), this,
                     Constants.INDOORATLAS_API_KEY, Constants.INDOORATLAS_API_SECRET);
             Log.i(TAG, "mIndoorAtlas 创建");
-            togglePositioning();
+            //togglePositioning();
         } catch (IndoorAtlasException e) {
             e.printStackTrace();
         }
@@ -584,23 +585,22 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
             locationOverlay.setPosition(new PointF(i, j));
             mapView.refresh();
 
-            List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("deviceId", deviceId));
-            params.add(new BasicNameValuePair("lat", Double.toString(lat)));
-            params.add(new BasicNameValuePair("lon", Double.toString(lon)));
-            params.add(new BasicNameValuePair("i", Integer.toString(i)));
-            params.add(new BasicNameValuePair("j", Integer.toString(j)));
-            params.add(new BasicNameValuePair("x", Double.toString(x)));
-            params.add(new BasicNameValuePair("y", Double.toString(y)));
-            params.add(new BasicNameValuePair("heading", Double.toString(heading)));
-            params.add(new BasicNameValuePair("uncertainty", Double.toString(uncertainty)));
-            params.add(new BasicNameValuePair("roundtrip", Long.toString(roundtrip)));
-            params.add(new BasicNameValuePair("time", sd.format(new Date().getTime())));
-            params.add(new BasicNameValuePair("pid", Integer.toString(pid)));
-            params.add(new BasicNameValuePair("fn", Integer.toString(fn)));
+            UserPositionTable userPositionTable = new UserPositionTable();
+            userPositionTable.setDeviceId(deviceId);
+            userPositionTable.setLat(lat);
+            userPositionTable.setLon(lon);
+            userPositionTable.setI(i);
+            userPositionTable.setJ(j);
+            userPositionTable.setX(x);
+            userPositionTable.setY(y);
+            userPositionTable.setHeading(heading);
+            userPositionTable.setUncertainty(uncertainty);
+            userPositionTable.setRoundtrip(roundtrip);
+            userPositionTable.setTime(sd.format(new Date().getTime()));
+            userPositionTable.setPid(pid);
+            userPositionTable.setFn(fn);
             //上传
-//            JSONObject job = JSONUpload.makeHttpRequest("POST", params);
-//            Log.e(TAG, "job:" + job.toString());
+//            new JSONUpload().uploadPositionData("POST", userPositionTable);
         }
 
     }
