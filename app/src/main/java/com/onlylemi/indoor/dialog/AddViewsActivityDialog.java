@@ -3,7 +3,7 @@ package com.onlylemi.indoor.dialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +13,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onlylemi.dr.util.DiskLruCache;
 import com.onlylemi.indoor.R;
-import com.onlylemi.view.WheelView;
+import com.onlylemi.map.core.PMark;
+import com.onlylemi.parse.JSONUpload;
+import com.onlylemi.parse.info.ActivityTable;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by only乐秘 on 2015-10-07.
@@ -28,9 +30,8 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
 
     public final static String TAG = "AddViewsActivityDialog:";
 
-    private static final String[] PLANETS = new String[]{"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Uranus", "Neptune", "Pluto"};
-
     private Context context;
+    private List<PMark> views;
 
     private Button cancleBut;
     private Button okBut;
@@ -43,10 +44,17 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
     private DatePickerDialog datePickerDialogStart;
     private DatePickerDialog datePickerDialogEnd;
 
-    public AddViewsActivityDialog(Context context) {
+    private ActivityTable activityTable;
+
+    private Handler handler;
+
+    public AddViewsActivityDialog(Context context, List<PMark> views, Handler handler) {
         super(context);
 
         this.context = context;
+        this.views = views;
+        this.activityTable = new ActivityTable();
+        this.handler = handler;
 
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.add_views_activity_dialog, null);
@@ -80,7 +88,11 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
         } else if (v == cancleBut) {
             this.cancel();
         } else if (v == addViewsActivityName) {
-            WheelViewDialog wheelViewDialog = new WheelViewDialog(context);
+            List<String> items = new ArrayList<>();
+            for (PMark pMark : views) {
+                items.add(pMark.name);
+            }
+            WheelViewDialog wheelViewDialog = new WheelViewDialog(context, items);
             wheelViewDialog.setTitle("选择店铺");
             wheelViewDialog.setOnClickOkListener(this);
             wheelViewDialog.show();
@@ -98,8 +110,9 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
     }
 
     @Override
-    public void onOk(int selectedIndex, String item) {
+    public void onOk(int position, String item) {
         this.addViewsActivityName.setText(item);
+        activityTable.setVid(views.get(position).id);
     }
 
     @Override
@@ -140,8 +153,31 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
             return;
         }
 
+        activityTable.setName(viewActivityName);
+        activityTable.setStartTime(viewActivityStartTime);
+        activityTable.setEndTime(viewActivityEndTime);
+        activityTable.setIntro(viewActivityIntro);
+
+        Log.i(TAG, activityTable.toString());
+
+        JSONUpload upload = new JSONUpload(handler);
+        upload.setOnUploadDataListener(new JSONUpload.OnUploadDataListener() {
+            @Override
+            public void onSuccess(int success, final String message) {
+                Log.i(TAG, message);
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFail(int success, final String message) {
+                Log.i(TAG, message);
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+        upload.uploadViewsActivityData("POST", activityTable);
+
 
         this.cancel();
-        Log.i(TAG, viewActivityName + " " + viewActivityStartTime + " " + viewActivityEndTime + " " + viewActivityIntro);
     }
+
 }
