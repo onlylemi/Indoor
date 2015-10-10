@@ -21,7 +21,6 @@ import com.onlylemi.dr.util.DiskLruCache;
 import com.onlylemi.dr.util.JSONHttp;
 import com.onlylemi.dr.util.NetworkJudge;
 import com.onlylemi.indoor.R;
-import com.onlylemi.indoor.TestActivity;
 import com.onlylemi.parse.Data;
 import com.onlylemi.parse.info.ActivityTable;
 import com.onlylemi.parse.info.CityTable;
@@ -44,9 +43,8 @@ public class ReadyActivity extends Activity {
     private static final String TAG = "ReadyActivity:";
 
     private static final int DISK_CACHE_DEFAULT_SIZE = 5 * 1024 * 1024;
-    private DiskLruCache diskLruCache;
-
-
+    //延时 handler
+    public static Handler handler;
     //表名列表
     private final String CityTableName = CityTable.class.getSimpleName();
     private final String FloorPlanTableName = "FloorPlanTable";
@@ -55,15 +53,19 @@ public class ReadyActivity extends Activity {
     private final String ViewsTableName = "ViewsTable";
     private final String ActivityTableName = "ActivityTable";
     private final String NodesTableName = "NodesTable";
-
-
+    private DiskLruCache diskLruCache;
     private SharedPreferences.Editor editor;
-    //延时 handler
-    public static Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!NetworkJudge.isWifiEnabled(this)) {
+            synchronized (ReadyActivity.this) {
+                Toast.makeText(ReadyActivity.this, "no wi-fi", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "no wi-fi");
+            }
+        }
 
         handler = new Handler() {
             @Override
@@ -145,12 +147,14 @@ public class ReadyActivity extends Activity {
                 Log.e(BaiduLocate.TAG, "定位回调监听成功-----" + "address : " + address);
                 Log.i(TAG, "city : " + city);
                 BaiduLocate.getInstance().stopLocate();
-                handler.sendEmptyMessage(Constant.READY_GO);
+//                handler.sendEmptyMessage(Constant.READY_GO);
             }
         });
         BaiduLocate.getInstance().startLocate();
 
         setContentView(R.layout.activity_ready);
+
+        handler.sendEmptyMessageDelayed(Constant.READY_GO, 3000);
     }
 
     /**

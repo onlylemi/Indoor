@@ -24,4 +24,9 @@
     <string name="title_activity_camera">CameraActivity</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="button_activity_every_part">一键导航</string>
+
+    <!-- login dialog of string-->
+    <string name="login_name_hint">用户名</string>
+    <string name="login_pw_hint">密码</string>
+    <string name="login">登录</string>
 </resources>

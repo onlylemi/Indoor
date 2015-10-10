@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.onlylemi.dr.dialog.LoginDialog;
 import com.onlylemi.dr.fragment.FindFragment;
 import com.onlylemi.dr.fragment.MapFragment;
 import com.onlylemi.dr.fragment.NavigationDrawerFragment;
@@ -145,6 +146,8 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         if(item.getItemId() == R.id.map_switch) {
             mMapFragment.switchModel();
+            LoginDialog dialog = new LoginDialog(this);
+            dialog.show();
         }
         return super.onOptionsItemSelected(item);
     }
