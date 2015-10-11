@@ -27,19 +27,21 @@ import java.util.Set;
  * I love programming
  */
 public class EveryPartAdapter extends BaseAdapter {
-    private Context mContext;
-    private AsyncImageLoader asyncImageLoader;
     public List<ViewsTable> viewsTableList;
     public Set<Integer> integerList;
+    private Context mContext;
+    private AsyncImageLoader asyncImageLoader;
 
     public EveryPartAdapter(Context mContext) {
         this.mContext = mContext;
-        init();
-    }
-    private void init() {
         asyncImageLoader = new AsyncImageLoader(mContext);
         viewsTableList = new ArrayList<>();
         integerList = new HashSet<>();
+        initData();
+    }
+
+    private void initData() {
+
         for (int i = 0; i < Data.viewTableList.size(); i++) {
             if (Data.viewTableList.get(i).getPid() == Assist.currentPlaceId) {
                 viewsTableList.add(Data.viewTableList.get(i).cloneSelf());
@@ -76,7 +78,6 @@ public class EveryPartAdapter extends BaseAdapter {
         }
         viewHolder.imageView.setTag(viewsTableList.get(position).getImage());
         viewHolder.imageView.setBackground(mContext.getResources().getDrawable(R.drawable.user_photo_background));
-
         Bitmap bitmap = asyncImageLoader.loadImage(viewHolder.imageView, viewsTableList.get(position).getImage());
         if (bitmap != null) {
             Drawable drawable = new BitmapDrawable(null, bitmap);
@@ -87,4 +88,7 @@ public class EveryPartAdapter extends BaseAdapter {
     }
 
 
+    public void update() {
+        initData();
+    }
 }

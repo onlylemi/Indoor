@@ -2,6 +2,7 @@ package com.onlylemi.dr.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,7 +28,7 @@ import com.onlylemi.indoor.TestActivity;
  */
 public class EveryPartActivity extends AppCompatActivity {
 
-    private static final String TAG = "EveryPartActivity:";
+    public static final String TAG = "EveryPartActivity:";
     private ImageView imageView;
     private TextView textViewDescription;
     private String string;
@@ -39,10 +40,7 @@ public class EveryPartActivity extends AppCompatActivity {
     private String imageUrl;
     private CheckBox checkbox;
     private String name;
-
-    public EveryPartActivity() {
-
-    }
+    private SwipeRefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +48,27 @@ public class EveryPartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_every_part);
 
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_every_part_refresh);
         imageView = (ImageView) findViewById(R.id.activity_every_part_image_view);
         textViewDescription = (TextView) findViewById(R.id.activity_every_part_description_text_view);
         gridView = (MyGridView) findViewById(R.id.activity_every_part_grid_view);
+
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.custom_test_five_title_background));
+        refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.gray));
+        refreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.e(TAG, "on refreshing");
+//                update();
+                ReadyActivity.handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
 
         Intent intent = getIntent();
         pid = intent.getIntExtra("PlaceID", pid);
@@ -116,5 +132,10 @@ public class EveryPartActivity extends AppCompatActivity {
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(name);
         return true;
+    }
+
+    public void update() {
+        adapter.update();
+        adapter.notifyDataSetChanged();
     }
 }

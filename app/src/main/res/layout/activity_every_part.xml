@@ -1,20 +1,14 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_every_part_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context="com.onlylemi.dr.activity.EveryPartActivity">
-
-    <View
-        android:id="@+id/activity_every_part_middle_one"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black" />
 
     <ScrollView
         android:id="@+id/id_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/activity_every_part_middle_one">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -74,12 +68,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/activity_every_part_middle_two"
+                android:layout_marginBottom="1dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
-                android:layout_marginBottom="1dp"
                 android:background="@drawable/navigatiom_selector"
                 android:text="@string/button_activity_every_part"
                 android:textSize="15sp" />
         </RelativeLayout>
     </ScrollView>
-</RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
