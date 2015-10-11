@@ -137,5 +137,17 @@ public class ViewsTable extends BaseTable {
         return json;
     }
 
-
+    public ViewsTable cloneSelf() {
+        ViewsTable viewsTable = new ViewsTable();
+        viewsTable.setFn(fn);
+        viewsTable.setId(id);
+        viewsTable.setImage(image);
+        viewsTable.setIntro(intro);
+        viewsTable.setName(name);
+        viewsTable.setPid(pid);
+        viewsTable.setVideo(video);
+        viewsTable.setX(x);
+        viewsTable.setY(y);
+        return viewsTable;
+    }
 }

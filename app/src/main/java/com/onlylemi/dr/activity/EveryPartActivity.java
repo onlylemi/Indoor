@@ -20,7 +20,6 @@ import com.onlylemi.dr.custom_view.MyGridView;
 import com.onlylemi.dr.util.PlacePhotoDownloadTask;
 import com.onlylemi.indoor.R;
 import com.onlylemi.indoor.TestActivity;
-import com.onlylemi.parse.Data;
 
 
 /**
@@ -80,8 +79,10 @@ public class EveryPartActivity extends AppCompatActivity {
                 checkbox = (CheckBox) view.findViewById(R.id.id_checkbox);
                 if (!checkbox.isChecked()) {
                     checkbox.setChecked(true);
+                    adapter.integerList.add(Integer.valueOf(adapter.viewsTableList.get(position).getId()));
                 } else {
                     checkbox.setChecked(false);
+                    adapter.integerList.remove(Integer.valueOf(adapter.viewsTableList.get(position).getId()));
                 }
             }
         });
@@ -106,17 +107,7 @@ public class EveryPartActivity extends AppCompatActivity {
 
     private void initAdapter() {
         adapter = new EveryPartAdapter(this);
-        for (int i = 0; i < Data.viewTableList.size(); i++) {
-            if (Data.viewTableList.get(i).getPid() == pid) {
-                EveryPartAdapter.EveryPartClass everyPartClass;
-                everyPartClass = adapter.new EveryPartClass();
-                everyPartClass.name = Data.viewTableList.get(i).getName();
-                everyPartClass.imageUrl = Data.viewTableList.get(i).getImage();
-                everyPartClass.imageDownloadFlags = Integer.valueOf(0);
-                adapter.everyPartClassList.add(everyPartClass);
-                Log.i(TAG, Data.viewTableList.get(i).toString());
-            }
-        }
+        Log.e(TAG, "size == " + adapter.viewsTableList.size());
     }
 
     @Override
@@ -126,5 +117,4 @@ public class EveryPartActivity extends AppCompatActivity {
         actionBar.setTitle(name);
         return true;
     }
-
 }
