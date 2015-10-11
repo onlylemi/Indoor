@@ -7,17 +7,17 @@ package com.onlylemi.parse.info;
  */
 public class NodesTable extends BaseTable {
 
-    private int id;
-    private int n;
-    private int x;
-    private int y;
-    private int pid;
-    private int fn;
+    private Integer id;
+    private Integer n;
+    private Integer x;
+    private Integer y;
+    private Integer pid;
+    private Integer fn;
 
     public NodesTable() {
     }
 
-    public NodesTable(int id, int n, int x, int y, int pid, int fn) {
+    public NodesTable(Integer id, Integer n, Integer x, Integer y, Integer pid, Integer fn) {
         this.id = id;
         this.n = n;
         this.x = x;
@@ -26,7 +26,7 @@ public class NodesTable extends BaseTable {
         this.fn = fn;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -34,7 +34,7 @@ public class NodesTable extends BaseTable {
         this.id = id;
     }
 
-    public int getN() {
+    public Integer getN() {
         return n;
     }
 
@@ -42,7 +42,7 @@ public class NodesTable extends BaseTable {
         this.n = n;
     }
 
-    public int getX() {
+    public Integer getX() {
         return x;
     }
 
@@ -50,7 +50,7 @@ public class NodesTable extends BaseTable {
         this.x = x;
     }
 
-    public int getY() {
+    public Integer getY() {
         return y;
     }
 
@@ -58,7 +58,7 @@ public class NodesTable extends BaseTable {
         this.y = y;
     }
 
-    public int getPid() {
+    public Integer getPid() {
         return pid;
     }
 
@@ -66,7 +66,7 @@ public class NodesTable extends BaseTable {
         this.pid = pid;
     }
 
-    public int getFn() {
+    public Integer getFn() {
         return fn;
     }
 

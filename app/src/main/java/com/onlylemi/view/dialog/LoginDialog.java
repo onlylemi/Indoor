@@ -1,4 +1,4 @@
-package com.onlylemi.dr.dialog;
+package com.onlylemi.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;

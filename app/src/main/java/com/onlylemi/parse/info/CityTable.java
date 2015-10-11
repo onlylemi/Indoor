@@ -7,19 +7,19 @@ package com.onlylemi.parse.info;
  */
 public class CityTable extends BaseTable {
 
-    private int id;
+    private Integer id;
     private String name;
 
     public CityTable() {
 
     }
 
-    public CityTable(int id, String name) {
+    public CityTable(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

@@ -2,24 +2,24 @@ package com.onlylemi.parse.info;
 
 /**
  * Created by only乐秘 on 2015-09-20.
- *
+ * <p/>
  * place表
  */
 public class PlaceTable extends BaseTable {
 
-    private int id;
+    private Integer id;
     private String name;
     private String image;
     private String video;
     private String intro;
-    private int cid;
-    private double lng;
-    private double lat;
+    private Integer cid;
+    private Double lng;
+    private Double lat;
 
     public PlaceTable() {
     }
 
-    public PlaceTable(int id, String name, String image, String video, String intro, int cid, double lng, double lat) {
+    public PlaceTable(Integer id, String name, String image, String video, String intro, Integer cid, Double lng, Double lat) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -30,7 +30,7 @@ public class PlaceTable extends BaseTable {
         this.lat = lat;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -70,7 +70,7 @@ public class PlaceTable extends BaseTable {
         this.intro = intro;
     }
 
-    public int getCid() {
+    public Integer getCid() {
         return cid;
     }
 
@@ -78,7 +78,7 @@ public class PlaceTable extends BaseTable {
         this.cid = cid;
     }
 
-    public double getLng() {
+    public Double getLng() {
         return lng;
     }
 
@@ -86,7 +86,7 @@ public class PlaceTable extends BaseTable {
         this.lng = lng;
     }
 
-    public double getLat() {
+    public Double getLat() {
         return lat;
     }
 

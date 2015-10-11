@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.onlylemi.parse.info.ActivityTable;
 import com.onlylemi.parse.info.UserPositionTable;
+import com.onlylemi.parse.info.UserTable;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -143,6 +144,7 @@ public class JSONUpload {
     }
 
     /**
+     * -
      * 上传监听器
      */
     public interface OnUploadDataListener {
@@ -205,6 +207,22 @@ public class JSONUpload {
         params.add(new BasicNameValuePair("end_time", activityTable.getEndTime()));
         params.add(new BasicNameValuePair("intro", activityTable.getIntro()));
         params.add(new BasicNameValuePair("vid", Integer.toString(activityTable.getVid())));
+
+        uploadData(url, method, params);
+    }
+
+    /**
+     * 上传用户数据
+     *
+     * @param method
+     * @param userTable
+     */
+    public void uploadUserData(String method, UserTable userTable) {
+        String url = URL_SERVER + "?r=login";
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("email", userTable.getEmail()));
+        params.add(new BasicNameValuePair("password", userTable.getPassword()));
 
         uploadData(url, method, params);
     }

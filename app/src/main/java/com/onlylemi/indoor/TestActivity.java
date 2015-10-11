@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,9 +17,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +33,7 @@ import android.widget.TextView;
 
 import com.onlylemi.camera.PreviewSurface;
 import com.onlylemi.camera.RouteSurface;
-import com.onlylemi.indoor.dialog.AddViewsActivityDialog;
+import com.onlylemi.view.dialog.AddViewsActivityDialog;
 import com.onlylemi.map.MapView;
 import com.onlylemi.map.MapViewListener;
 import com.onlylemi.map.core.PMark;
@@ -46,7 +41,6 @@ import com.onlylemi.map.overlay.LocationOverlay;
 import com.onlylemi.map.overlay.MarkOverlay;
 import com.onlylemi.map.overlay.RouteOverlay;
 import com.onlylemi.map.utils.Assist;
-import com.onlylemi.map.utils.AssistMath;
 import com.onlylemi.parse.JSONParseTable;
 
 public class TestActivity extends AppCompatActivity implements OnClickListener,

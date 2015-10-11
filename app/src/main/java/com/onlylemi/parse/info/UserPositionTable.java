@@ -3,27 +3,27 @@ package com.onlylemi.parse.info;
 /**
  * Created by only乐秘 on 2015-10-08.
  */
-public class UserPositionTable extends BaseTable{
+public class UserPositionTable extends BaseTable {
 
-    private int id;
+    private Integer id;
     private String deviceId;
-    private double lat;
-    private double lon;
-    private int i;
-    private int j;
-    private double x;
-    private double y;
-    private double heading;
-    private double uncertainty;
-    private long roundtrip;
+    private Double lat;
+    private Double lon;
+    private Integer i;
+    private Integer j;
+    private Double x;
+    private Double y;
+    private Double heading;
+    private Double uncertainty;
+    private Long roundtrip;
     private String time;
-    private int pid;
-    private int fn;
+    private Integer pid;
+    private Integer fn;
 
     public UserPositionTable() {
     }
 
-    public UserPositionTable(int id, String deviceId, double lat, double lon, int i, int j, double x, double y, double heading, double uncertainty, long roundtrip, String time, int pid, int fn) {
+    public UserPositionTable(Integer id, String deviceId, Double lat, Double lon, Integer i, Integer j, Double x, Double y, Double heading, Double uncertainty, Long roundtrip, String time, Integer pid, Integer fn) {
         this.id = id;
         this.deviceId = deviceId;
         this.lat = lat;
@@ -40,11 +40,11 @@ public class UserPositionTable extends BaseTable{
         this.fn = fn;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -56,92 +56,76 @@ public class UserPositionTable extends BaseTable{
         this.deviceId = deviceId;
     }
 
-    public double getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
-    public double getLon() {
+    public Double getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
+    public void setLon(Double lon) {
         this.lon = lon;
     }
 
-    public int getI() {
+    public Integer getI() {
         return i;
     }
 
-    public void setI(int i) {
+    public void setI(Integer i) {
         this.i = i;
     }
 
-    public int getJ() {
+    public Integer getJ() {
         return j;
     }
 
-    public void setJ(int j) {
+    public void setJ(Integer j) {
         this.j = j;
     }
 
-    public double getX() {
+    public Double getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(Double x) {
         this.x = x;
     }
 
-    public double getY() {
+    public Double getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(Double y) {
         this.y = y;
     }
 
-    public double getHeading() {
+    public Double getHeading() {
         return heading;
     }
 
-    public void setHeading(double heading) {
+    public void setHeading(Double heading) {
         this.heading = heading;
     }
 
-    public double getUncertainty() {
+    public Double getUncertainty() {
         return uncertainty;
     }
 
-    public void setUncertainty(double uncertainty) {
+    public void setUncertainty(Double uncertainty) {
         this.uncertainty = uncertainty;
     }
 
-    public long getRoundtrip() {
+    public Long getRoundtrip() {
         return roundtrip;
     }
 
-    public void setRoundtrip(long roundtrip) {
+    public void setRoundtrip(Long roundtrip) {
         this.roundtrip = roundtrip;
-    }
-
-    public int getPid() {
-        return pid;
-    }
-
-    public void setPid(int pid) {
-        this.pid = pid;
-    }
-
-    public int getFn() {
-        return fn;
-    }
-
-    public void setFn(int fn) {
-        this.fn = fn;
     }
 
     public String getTime() {
@@ -150,6 +134,22 @@ public class UserPositionTable extends BaseTable{
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public Integer getPid() {
+        return pid;
+    }
+
+    public void setPid(Integer pid) {
+        this.pid = pid;
+    }
+
+    public Integer getFn() {
+        return fn;
+    }
+
+    public void setFn(Integer fn) {
+        this.fn = fn;
     }
 
     @Override
@@ -174,6 +174,22 @@ public class UserPositionTable extends BaseTable{
 
     @Override
     public String toJson() {
-        return null;
+        String json = "{" +
+                "\"id\":" + "\"" + id + "\"" +
+                ",\"deviceId\":" + "\"" + deviceId + "\"" +
+                ",\"lat\":" + "\"" + lat + "\"" +
+                ",\"lon\":" + "\"" + lat + "\"" +
+                ",\"i\":" + "\"" + i + "\"" +
+                ",\"j\":" + "\"" + j + "\"" +
+                ",\"x\":" + "\"" + x + "\"" +
+                ",\"y\":" + "\"" + j + "\"" +
+                ",\"heading\":" + "\"" + heading + "\"" +
+                ",\"uncertainty\":" + "\"" + uncertainty + "\"" +
+                ",\"roundtrip\":" + "\"" + roundtrip + "\"" +
+                ",\"time\":" + "\"" + time + "\"" +
+                ",\"pid\":" + "\"" + pid + "\"" +
+                ",\"fn\":" + "\"" + fn + "\"" +
+                "}";
+        return json;
     }
 }

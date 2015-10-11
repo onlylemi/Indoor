@@ -11,7 +11,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.onlylemi.dr.dialog.LoginDialog;
+import com.onlylemi.view.dialog.LoginDialog;
 import com.onlylemi.dr.fragment.FindFragment;
 import com.onlylemi.dr.fragment.MapFragment;
 import com.onlylemi.dr.fragment.NavigationDrawerFragment;

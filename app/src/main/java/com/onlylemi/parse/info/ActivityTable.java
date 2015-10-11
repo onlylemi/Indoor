@@ -7,19 +7,19 @@ package com.onlylemi.parse.info;
  */
 public class ActivityTable extends BaseTable {
 
-    private int id;
+    private Integer id;
     private String name;
     private String image;
     private String startTime;
     private String endTime;
     private String intro;
 
-    private int vid;
+    private Integer vid;
 
     public ActivityTable() {
     }
 
-    public ActivityTable(int id, String startTime, String endTime, String name, String image, String intro, int vid) {
+    public ActivityTable(Integer id, String startTime, String endTime, String name, String image, String intro, Integer vid) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -29,7 +29,7 @@ public class ActivityTable extends BaseTable {
         this.endTime = endTime;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -77,7 +77,7 @@ public class ActivityTable extends BaseTable {
         this.intro = intro;
     }
 
-    public int getVid() {
+    public Integer getVid() {
         return vid;
     }
 
