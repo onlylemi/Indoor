@@ -66,7 +66,6 @@ public class ReadyActivity extends Activity {
                 Log.e(TAG, "no wi-fi");
             }
         }
-
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -82,6 +81,20 @@ public class ReadyActivity extends Activity {
             }
         };
 
+        //百度地图SDK初始化 必须在 setContentView 之前
+        SDKInitializer.initialize(getApplicationContext());
+
+        //百度定位初始化
+        BaiduLocate.InitContext(getApplicationContext());
+        BaiduLocate.getInstance().setMyLocateListener(new BaiduLocate.MyLocateListener() {
+            @Override
+            public void LocateCallBack(int flag, String city, String address) {
+                Log.e(BaiduLocate.TAG, "定位回调监听成功-----" + "address : " + address);
+                Log.i(TAG, "city : " + city);
+                BaiduLocate.getInstance().stopLocate();
+            }
+        });
+        BaiduLocate.getInstance().startLocate();
 
         initDiskCache();
         //是否删除文件缓存
@@ -135,26 +148,7 @@ public class ReadyActivity extends Activity {
             Toast.makeText(ReadyActivity.this, "当前无wifi连接", Toast.LENGTH_SHORT).show();
         }
 
-
-        //百度地图SDK初始化 必须在 setContentView 之前
-        SDKInitializer.initialize(getApplicationContext());
-
-        //百度定位初始化
-        BaiduLocate.InitContext(getApplicationContext());
-        BaiduLocate.getInstance().setMyLocateListener(new BaiduLocate.MyLocateListener() {
-            @Override
-            public void LocateCallBack(int flag, String city, String address) {
-                Log.e(BaiduLocate.TAG, "定位回调监听成功-----" + "address : " + address);
-                Log.i(TAG, "city : " + city);
-                BaiduLocate.getInstance().stopLocate();
-//                handler.sendEmptyMessage(Constant.READY_GO);
-            }
-        });
-        BaiduLocate.getInstance().startLocate();
-
         setContentView(R.layout.activity_ready);
-
-        handler.sendEmptyMessageDelayed(Constant.READY_GO, 3000);
     }
 
     /**
@@ -178,7 +172,7 @@ public class ReadyActivity extends Activity {
                         Data.cityTableList.add(city);
                     }
                     write(CityTableName, s);//写入缓存
-                    handler.sendEmptyMessage(Constant.READY_GO);
+                    handler.sendEmptyMessageDelayed(Constant.READY_GO, 2000);
                     Log.i(TAG, "city number : " + Data.cityTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析城市列表时出错");
@@ -379,7 +373,6 @@ public class ReadyActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 Data.activityTableList.clear();
                 Data.cityTableList.clear();
                 Data.floorPlanTableList.clear();
@@ -400,6 +393,7 @@ public class ReadyActivity extends Activity {
                         city.setId(object.getInt("id"));
                         Data.cityTableList.add(city);
                     }
+                    handler.sendEmptyMessageDelayed(Constant.READY_GO, 2000);
                     Log.i(TAG, "city number : " + Data.cityTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析城市列表时出错");

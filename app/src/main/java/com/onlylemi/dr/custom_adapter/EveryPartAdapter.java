@@ -41,7 +41,6 @@ public class EveryPartAdapter extends BaseAdapter {
     }
 
     private void initData() {
-
         for (int i = 0; i < Data.viewTableList.size(); i++) {
             if (Data.viewTableList.get(i).getPid() == Assist.currentPlaceId) {
                 viewsTableList.add(Data.viewTableList.get(i).cloneSelf());
@@ -89,6 +88,11 @@ public class EveryPartAdapter extends BaseAdapter {
 
 
     public void update() {
-        initData();
+        viewsTableList.clear();
+        for (int i = 0; i < Data.viewTableList.size(); i++) {
+            if (Data.viewTableList.get(i).getPid() == Assist.currentPlaceId) {
+                viewsTableList.add(Data.viewTableList.get(i).cloneSelf());
+            }
+        }
     }
 }

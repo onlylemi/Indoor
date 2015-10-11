@@ -31,6 +31,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.onlylemi.dr.util.BaiduLocate;
+import com.onlylemi.dr.util.NetworkJudge;
 import com.onlylemi.indoor.R;
 import com.onlylemi.parse.Data;
 import com.onlylemi.parse.info.PlaceTable;
@@ -105,7 +106,11 @@ public class MapFragment extends Fragment implements BaiduMap.OnMarkerClickListe
         if (initLocation()) {
             initPlace();
         } else {
-            Toast.makeText(mContext, "初始化定位失败， 请手动选择城市 ", Toast.LENGTH_LONG).show();
+            if(!NetworkJudge.isWifiEnabled(mContext)) {
+                Toast.makeText(mContext, "初始化定位失败， 请手动选择城市 ", Toast.LENGTH_LONG).show();
+            }else {
+                Toast.makeText(mContext, "初始化定位失败， no-wifi ", Toast.LENGTH_LONG).show();
+            }
         }
         return view;
     }

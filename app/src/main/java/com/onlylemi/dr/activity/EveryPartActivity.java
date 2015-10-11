@@ -53,20 +53,24 @@ public class EveryPartActivity extends AppCompatActivity {
         textViewDescription = (TextView) findViewById(R.id.activity_every_part_description_text_view);
         gridView = (MyGridView) findViewById(R.id.activity_every_part_grid_view);
 
-        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.custom_test_five_title_background));
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.custom_test_five_title_background)
+                , getResources().getColor(R.color.custom_test_four)
+                , getResources().getColor(R.color.custom_test_one)
+                , getResources().getColor(R.color.custom_test_three));
         refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.gray));
         refreshLayout.setSize(SwipeRefreshLayout.LARGE);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.e(TAG, "on refreshing");
-//                update();
+                update();
+                refreshLayout.setRefreshing(true);
                 ReadyActivity.handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         refreshLayout.setRefreshing(false);
                     }
-                }, 3000);
+                }, 1500);
             }
         });
 
@@ -134,7 +138,7 @@ public class EveryPartActivity extends AppCompatActivity {
         return true;
     }
 
-    public void update() {
+    public void update(){
         adapter.update();
         adapter.notifyDataSetChanged();
     }
