@@ -13,37 +13,49 @@ import android.widget.TextView;
 import com.onlylemi.dr.util.AsyncImageLoader;
 import com.onlylemi.dr.util.ViewHolder;
 import com.onlylemi.indoor.R;
+import com.onlylemi.parse.Data;
+import com.onlylemi.parse.info.ViewsTable;
+import com.onlylemi.user.Assist;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by 董神 on 2015/9/5.
  * I love programming
  */
 public class EveryPartAdapter extends BaseAdapter {
-
-    public List<EveryPartClass> everyPartClassList;
+    public List<ViewsTable> viewsTableList;
+    public Set<Integer> integerList;
     private Context mContext;
     private AsyncImageLoader asyncImageLoader;
 
     public EveryPartAdapter(Context mContext) {
         this.mContext = mContext;
-        everyPartClassList = new ArrayList<>();
         asyncImageLoader = new AsyncImageLoader(mContext);
+        viewsTableList = new ArrayList<>();
+        integerList = new HashSet<>();
+        initData();
     }
 
-    public EveryPartAdapter() {
+    private void initData() {
+        for (int i = 0; i < Data.viewTableList.size(); i++) {
+            if (Data.viewTableList.get(i).getPid() == Assist.currentPlaceId) {
+                viewsTableList.add(Data.viewTableList.get(i).cloneSelf());
+            }
+        }
     }
 
     @Override
     public int getCount() {
-        return everyPartClassList.size();
+        return viewsTableList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return everyPartClassList.get(position);
+        return viewsTableList.get(position);
     }
 
     @Override
@@ -63,31 +75,24 @@ public class EveryPartAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.imageView.setTag(everyPartClassList.get(position).imageUrl);
+        viewHolder.imageView.setTag(viewsTableList.get(position).getImage());
         viewHolder.imageView.setBackground(mContext.getResources().getDrawable(R.drawable.user_photo_background));
-
-        Bitmap bitmap = asyncImageLoader.loadImage(viewHolder.imageView, everyPartClassList.get(position).imageUrl);
+        Bitmap bitmap = asyncImageLoader.loadImage(viewHolder.imageView, viewsTableList.get(position).getImage());
         if (bitmap != null) {
             Drawable drawable = new BitmapDrawable(null, bitmap);
             viewHolder.imageView.setBackground(drawable);
         }
-        viewHolder.textView.setText(everyPartClassList.get(position).name);
+        viewHolder.textView.setText(viewsTableList.get(position).getName());
         return convertView;
     }
 
-    /*
-    每个控件的信息
-     */
-    public class EveryPartClass {
 
-        public EveryPartClass() {
-
+    public void update() {
+        viewsTableList.clear();
+        for (int i = 0; i < Data.viewTableList.size(); i++) {
+            if (Data.viewTableList.get(i).getPid() == Assist.currentPlaceId) {
+                viewsTableList.add(Data.viewTableList.get(i).cloneSelf());
+            }
         }
-
-        public String imageUrl;
-        public String name;
-        public Integer imageDownloadFlags;
     }
-
-
 }

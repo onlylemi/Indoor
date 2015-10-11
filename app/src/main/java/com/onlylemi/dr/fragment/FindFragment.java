@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 
 import com.onlylemi.dr.activity.EveryPartActivity;
+import com.onlylemi.dr.activity.ReadyActivity;
 import com.onlylemi.dr.listViewAnimation.ScaleInAnimationAdapter;
 import com.onlylemi.dr.util.AsyncImageLoader;
 import com.onlylemi.indoor.R;
@@ -40,6 +42,7 @@ public class FindFragment extends Fragment {
     private ListView listView;
     private MyAdapter myAdapter;
     private View v;
+    private SwipeRefreshLayout refreshLayout;
     private static int cityID;
     private Handler handler;
 
@@ -52,7 +55,7 @@ public class FindFragment extends Fragment {
 
     void init() {
 
-
+        refreshLayout = (SwipeRefreshLayout)v.findViewById(R.id.fragement_find_refresh);
         listView = (ListView) v.findViewById(R.id.second_list);
         listView.setDivider(null);
         myAdapter = new MyAdapter(getActivity().getApplicationContext(), handler);
@@ -60,8 +63,26 @@ public class FindFragment extends Fragment {
         ScaleInAnimationAdapter scaleInAnimationAdapter = new ScaleInAnimationAdapter(myAdapter, 0f);
         scaleInAnimationAdapter.setListView(listView);
 
-        listView.setAdapter(scaleInAnimationAdapter);
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.custom_test_five_title_background)
+                , getResources().getColor(R.color.custom_test_four)
+                , getResources().getColor(R.color.custom_test_one)
+                , getResources().getColor(R.color.custom_test_three));
+        refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.gray));
+        refreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                upDate();
+                ReadyActivity.handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshLayout.setRefreshing(false);
+                    }
+                },1500);
+            }
+        });
 
+        listView.setAdapter(scaleInAnimationAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
