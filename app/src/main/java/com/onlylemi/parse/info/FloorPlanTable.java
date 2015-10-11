@@ -8,9 +8,9 @@ package com.onlylemi.parse.info;
  */
 public class FloorPlanTable extends BaseTable {
 
-    private int id;
-    private int fn;
-    private int pid;
+    private Integer id;
+    private Integer fn;
+    private Integer pid;
 
     private String image;
     private String floorplanid;
@@ -20,7 +20,7 @@ public class FloorPlanTable extends BaseTable {
     public FloorPlanTable() {
     }
 
-    public FloorPlanTable(int id, int fn, String image, int pid, String floorplanid, String floorid, String venueid) {
+    public FloorPlanTable(Integer id, Integer fn, String image, Integer pid, String floorplanid, String floorid, String venueid) {
         this.id = id;
         this.fn = fn;
         this.image = image;
@@ -30,7 +30,7 @@ public class FloorPlanTable extends BaseTable {
         this.venueid = venueid;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -38,7 +38,7 @@ public class FloorPlanTable extends BaseTable {
         this.id = id;
     }
 
-    public int getFn() {
+    public Integer getFn() {
         return fn;
     }
 
@@ -54,7 +54,7 @@ public class FloorPlanTable extends BaseTable {
         this.image = image;
     }
 
-    public int getPid() {
+    public Integer getPid() {
         return pid;
     }
 

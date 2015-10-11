@@ -7,22 +7,22 @@ package com.onlylemi.parse.info;
  */
 public class ViewsTable extends BaseTable {
 
-    private int id;
+    private Integer id;
     private String name;
     private String image;
     private String video;
     private String intro;
 
-    private int x;
-    private int y;
+    private Integer x;
+    private Integer y;
 
-    private int pid;
-    private int fn;
+    private Integer pid;
+    private Integer fn;
 
     public ViewsTable() {
     }
 
-    public ViewsTable(int id, String name, String image, String video, String intro, int x, int y, int pid, int fn) {
+    public ViewsTable(Integer id, String name, String image, String video, String intro, Integer x, Integer y, Integer pid, Integer fn) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -34,11 +34,11 @@ public class ViewsTable extends BaseTable {
         this.fn = fn;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -74,35 +74,35 @@ public class ViewsTable extends BaseTable {
         this.intro = intro;
     }
 
-    public int getX() {
+    public Integer getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(Integer x) {
         this.x = x;
     }
 
-    public int getY() {
+    public Integer getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(Integer y) {
         this.y = y;
     }
 
-    public int getPid() {
+    public Integer getPid() {
         return pid;
     }
 
-    public void setPid(int pid) {
+    public void setPid(Integer pid) {
         this.pid = pid;
     }
 
-    public int getFn() {
+    public Integer getFn() {
         return fn;
     }
 
-    public void setFn(int fn) {
+    public void setFn(Integer fn) {
         this.fn = fn;
     }
 

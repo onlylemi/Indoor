@@ -1,4 +1,4 @@
-package com.onlylemi.indoor.dialog;
+package com.onlylemi.view.dialog;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
