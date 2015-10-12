@@ -36,7 +36,9 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
     private boolean flag;
     private Thread thread;
 
-    private float x, y;
+    private float x;
+    private float y;
+    private float cx, cy, cr;
     private boolean isTouch = false;
 
     private Bitmap bmp3DStraight;
@@ -66,9 +68,15 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
         screenW = this.getWidth();
         screenH = this.getHeight();
 
+        cx = screenW / 2;
+        cy = screenH;
+        cr = 2 * screenW / 5;
+
         flag = true;
-        thread = new Thread(this);
-        thread.start();
+        //thread = new Thread(this);
+        //thread.start();
+
+        refresh();
     }
 
     @Override
@@ -79,6 +87,23 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         flag = false;
+    }
+
+
+    /**
+     * 重新刷新surface
+     */
+    public void refresh() {
+        x = cx + (float) (cr * Math.sin(rotateDegree));
+        y = cy - (float) (cr * Math.cos(rotateDegree));
+
+        Log.i(TAG, "rotateDegree:" + rotateDegree + " x:" + x + " y:" + y);
+
+        canvas = holder.lockCanvas();
+        if (canvas != null) {
+            myDraw(canvas);
+            holder.unlockCanvasAndPost(canvas);
+        }
     }
 
     @Override
@@ -92,8 +117,8 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
             }
             long end = System.currentTimeMillis();
             try {
-                if (end - start < 50) {
-                    Thread.sleep(50 - (end - start));
+                if (end - start < 500) {
+                    Thread.sleep(500 - (end - start));
                 }
             } catch (InterruptedException e) {
                 Log.e(TAG, e.toString());
@@ -105,11 +130,12 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
     private void myDraw(Canvas canvas) {
         if (canvas != null && isTouch) {
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //清除画布
+//            paint.setColor(Color.RED);
+//            paint.setStrokeWidth(5);
+//            canvas.drawCircle(cx, cy, cr, paint);
+
 
             drawArrowOnPortrait(canvas, paint);
-//            drawArrowOnLandscape(canvas, paint);
-            //canvas.drawCircle(x, y, 20, paint);
-
         }
     }
 
@@ -175,8 +201,8 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
      * @param paint
      */
     private void drawArrowOnPortrait(Canvas canvas, Paint paint) {
-        float xn = screenW / 2;
-        float yn = screenH;
+        float xn = cx;
+        float yn = cy;
 
         canvas.save();
         canvas.translate(x, y);
@@ -187,7 +213,7 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
         } else {
             canvas.rotate(90);
         }
-        RectF rectF = new RectF(0, -200, 200, (screenH - (int) y));
+        RectF rectF = new RectF(0, -200, 200, (yn - (int) y));
         if (x > xn) {
             canvas.drawBitmap(bmp3DStraight, null, rectF, paint);
         } else {

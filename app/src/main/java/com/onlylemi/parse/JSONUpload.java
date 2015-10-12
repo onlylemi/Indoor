@@ -1,5 +1,7 @@
 package com.onlylemi.parse;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
@@ -42,10 +44,10 @@ public class JSONUpload {
 
     private OnUploadDataListener listener;
 
-    private Handler handler;
+    private Activity activity;
 
-    public JSONUpload(Handler handler) {
-        this.handler = handler;
+    public JSONUpload(Activity activity) {
+        this.activity = activity;
     }
 
     /**
@@ -65,7 +67,7 @@ public class JSONUpload {
                         // request method is POST
                         DefaultHttpClient httpClient = new DefaultHttpClient();
                         HttpPost httpPost = new HttpPost(url);
-                        httpPost.setEntity(new UrlEncodedFormEntity(params));
+                        httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
                         HttpResponse httpResponse = httpClient.execute(httpPost);
                         HttpEntity httpEntity = httpResponse.getEntity();
@@ -74,7 +76,7 @@ public class JSONUpload {
                     } else if (method.equals("GET")) {
                         // request method is GET
                         DefaultHttpClient httpClient = new DefaultHttpClient();
-                        String paramString = URLEncodedUtils.format(params, "utf-8");
+                        String paramString = URLEncodedUtils.format(params, "UTF-8");
                         url += "?" + paramString;
                         HttpGet httpGet = new HttpGet(url);
 
@@ -113,20 +115,18 @@ public class JSONUpload {
                     final int success = jObj.getInt("success");
                     final String message = jObj.getString("message");
 
-                    if (handler != null) {
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (listener != null) {
-                                    if (success == 1) {
-                                        listener.onSuccess(success, message);
-                                    } else {
-                                        listener.onFail(success, message);
-                                    }
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (listener != null) {
+                                if (success == 1) {
+                                    listener.onSuccess(success, message);
+                                } else {
+                                    listener.onFail(success, message);
                                 }
                             }
-                        });
-                    }
+                        }
+                    });
                 } catch (JSONException e) {
                     Log.e(TAG, "Error parsing data " + e.toString());
                 }
@@ -225,5 +225,44 @@ public class JSONUpload {
         params.add(new BasicNameValuePair("password", userTable.getPassword()));
 
         uploadData(url, method, params);
+    }
+
+    /**
+     * 上传用户位置数据
+     *
+     * @param method
+     * @param userPositionTable
+     * @param listener
+     */
+    public void uploadPositionData(String method, UserPositionTable userPositionTable, OnUploadDataListener listener) {
+        this.listener = listener;
+
+        uploadPositionData(method, userPositionTable);
+    }
+
+    /**
+     * 上传活动数据
+     *
+     * @param method
+     * @param activityTable
+     * @param listener
+     */
+    public void uploadViewsActivityData(String method, ActivityTable activityTable, OnUploadDataListener listener) {
+        this.listener = listener;
+
+        uploadViewsActivityData(method, activityTable);
+    }
+
+    /**
+     * 上传用户数据
+     *
+     * @param method
+     * @param userTable
+     * @param listener
+     */
+    public void uploadUserData(String method, UserTable userTable, OnUploadDataListener listener) {
+        this.listener = listener;
+
+        uploadUserData(method, userTable);
     }
 }

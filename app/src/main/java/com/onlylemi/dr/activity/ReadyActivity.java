@@ -399,7 +399,7 @@ public class ReadyActivity extends Activity {
                         Log.i(TAG, "city number : " + Data.getCityTableList().size());
                     }
                     Log.w(ReadyActivity.TAG, "size ===== " + Data.getCityTableList().size());
-                    handler.sendEmptyMessageDelayed(Constant.READY_GO, 500);
+                    handler.sendEmptyMessageDelayed(Constant.READY_GO, 1000);
                 } catch (Exception e) {
                     Log.e(TAG, "解析城市列表时出错");
                     e.printStackTrace();
@@ -421,28 +421,10 @@ public class ReadyActivity extends Activity {
                 Data.nodesContactTableList.clear();
                 Data.nodesTableList.clear();
                 Data.placeTableList.clear();
-                //城市信息初始化
-                String s = read(CityTableName);
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    JSONArray arrays = jsonObject.getJSONArray("city");
-                    Data.getCityTableList().clear();
-                    for (int i = 0; i < arrays.length(); i++) {
-                        CityTable city = new CityTable();
-                        JSONObject object = arrays.getJSONObject(i);
-                        city.setName(object.getString("name"));
-                        city.setId(object.getInt("id"));
-                        Data.getCityTableList().add(city);
-                    }
-                    Log.i(TAG, "city number : " + Data.getCityTableList().size());
-                    handler.sendEmptyMessageDelayed(Constant.READY_GO, 2000);
-                } catch (Exception e) {
-                    Log.e(TAG, "解析城市列表时出错");
-                    e.printStackTrace();
-                }
+
 
                 //地方信息初始化
-                s = read(PlaceTableName);
+                String s = read(PlaceTableName);
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     JSONArray arrays = jsonObject.getJSONArray("place");
@@ -484,7 +466,6 @@ public class ReadyActivity extends Activity {
                         activityTable.setVid(object.getInt("vid"));
                         Data.activityTableList.add(activityTable);
                     }
-                    write(ActivityTableName, s);//写入缓存
                     Log.i(TAG, "activity number : " + Data.activityTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析活动列表时出错");
@@ -511,7 +492,6 @@ public class ReadyActivity extends Activity {
                         viewsTable.setFn(object.getInt("fn"));
                         Data.viewTableList.add(viewsTable);
                     }
-                    write(ViewsTableName, s);//写入缓存
                     Log.i(TAG, "views number : " + Data.viewTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析views列表时出错");
@@ -536,7 +516,6 @@ public class ReadyActivity extends Activity {
                         floorPlanTable.setId(object.getInt("id"));
                         Data.floorPlanTableList.add(floorPlanTable);
                     }
-                    write(FloorPlanTableName, s);//写入缓存
                     Log.i(TAG, "floorplan number : " + Data.floorPlanTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析floorplan列表时出错");
@@ -559,7 +538,6 @@ public class ReadyActivity extends Activity {
                         nodesContact.setId(object.getInt("id"));
                         Data.nodesContactTableList.add(nodesContact);
                     }
-                    write(NodesContactTableName, s);//写入缓存
                     Log.i(TAG, "NodesContact number : " + Data.nodesContactTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析nodesContactList列表时出错" + e.toString());
@@ -582,10 +560,28 @@ public class ReadyActivity extends Activity {
                         nodesTable.setId(object.getInt("id"));
                         Data.nodesTableList.add(nodesTable);
                     }
-                    write(NodesTableName, s);//写入缓存
                     Log.i(TAG, "Nodes number : " + Data.nodesTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析nodes列表时出错" + e.toString());
+                }
+                //城市信息初始化
+                s = read(CityTableName);
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONArray arrays = jsonObject.getJSONArray("city");
+                    Data.getCityTableList().clear();
+                    for (int i = 0; i < arrays.length(); i++) {
+                        CityTable city = new CityTable();
+                        JSONObject object = arrays.getJSONObject(i);
+                        city.setName(object.getString("name"));
+                        city.setId(object.getInt("id"));
+                        Data.getCityTableList().add(city);
+                    }
+                    Log.i(TAG, "city number : " + Data.getCityTableList().size());
+                    handler.sendEmptyMessageDelayed(Constant.READY_GO, 1000);
+                } catch (Exception e) {
+                    Log.e(TAG, "解析城市列表时出错");
+                    e.printStackTrace();
                 }
             }
         }).start();

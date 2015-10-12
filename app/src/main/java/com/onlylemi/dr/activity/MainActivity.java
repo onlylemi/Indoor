@@ -147,8 +147,8 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         if(item.getItemId() == R.id.map_switch) {
             mMapFragment.switchModel();
-            LoginDialog dialog = new LoginDialog(this);
-            dialog.show();
+//            LoginDialog dialog = new LoginDialog(this);
+//            dialog.show();
         }
         return super.onOptionsItemSelected(item);
     }

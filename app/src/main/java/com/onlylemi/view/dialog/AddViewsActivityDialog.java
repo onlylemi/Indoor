@@ -1,5 +1,6 @@
 package com.onlylemi.view.dialog;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -30,7 +31,7 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
 
     public final static String TAG = "AddViewsActivityDialog:";
 
-    private Context context;
+    private Activity activity;
     private List<PMark> views;
 
     private Button cancleBut;
@@ -46,17 +47,14 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
 
     private ActivityTable activityTable;
 
-    private Handler handler;
+    public AddViewsActivityDialog(Activity activity, List<PMark> views) {
+        super(activity);
 
-    public AddViewsActivityDialog(Context context, List<PMark> views, Handler handler) {
-        super(context);
-
-        this.context = context;
+        this.activity = activity;
         this.views = views;
         this.activityTable = new ActivityTable();
-        this.handler = handler;
 
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(activity);
         View view = inflater.inflate(R.layout.add_views_activity_dialog, null);
 
         addViewsActivityName = (TextView) view.findViewById(R.id.add_views_activity_name);
@@ -92,17 +90,17 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
             for (PMark pMark : views) {
                 items.add(pMark.name);
             }
-            WheelViewDialog wheelViewDialog = new WheelViewDialog(context, items);
+            WheelViewDialog wheelViewDialog = new WheelViewDialog(activity, items);
             wheelViewDialog.setTitle("选择店铺");
             wheelViewDialog.setOnClickOkListener(this);
             wheelViewDialog.show();
         } else if (v == addViewsActivityStartName) {
-            datePickerDialogStart = new DatePickerDialog(context, android.app.AlertDialog.THEME_HOLO_LIGHT, this,
+            datePickerDialogStart = new DatePickerDialog(activity, android.app.AlertDialog.THEME_HOLO_LIGHT, this,
                     mYear, mMonth, mDay);
             datePickerDialogStart.setTitle("选择优惠活动开始时间");
             datePickerDialogStart.show();
         } else if (v == addViewsActivityEndName) {
-            datePickerDialogEnd = new DatePickerDialog(context, android.app.AlertDialog.THEME_HOLO_LIGHT, this,
+            datePickerDialogEnd = new DatePickerDialog(activity, android.app.AlertDialog.THEME_HOLO_LIGHT, this,
                     mYear, mMonth, mDay);
             datePickerDialogEnd.setTitle("选择优惠活动结束时间");
             datePickerDialogEnd.show();
@@ -137,19 +135,19 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
         String viewActivityIntro = this.addViewsActivityIntro.getText().toString();
 
         if ("".equals(viewActivityName)) {
-            Toast.makeText(context, "请选择商铺！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "请选择商铺！", Toast.LENGTH_SHORT).show();
             return;
         }
         if ("".equals(viewActivityStartTime)) {
-            Toast.makeText(context, "请选择优惠活动开始时间！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "请选择优惠活动开始时间！", Toast.LENGTH_SHORT).show();
             return;
         }
         if ("".equals(viewActivityEndTime)) {
-            Toast.makeText(context, "请选择优惠活动结束时间！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "请选择优惠活动结束时间！", Toast.LENGTH_SHORT).show();
             return;
         }
         if ("".equals(viewActivityIntro)) {
-            Toast.makeText(context, "请输入优惠活动介绍详细介绍内容！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "请输入优惠活动介绍详细介绍内容！", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -160,18 +158,18 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
 
         Log.i(TAG, activityTable.toString());
 
-        JSONUpload upload = new JSONUpload(handler);
+        JSONUpload upload = new JSONUpload(activity);
         upload.setOnUploadDataListener(new JSONUpload.OnUploadDataListener() {
             @Override
             public void onSuccess(int success, final String message) {
                 Log.i(TAG, message);
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFail(int success, final String message) {
                 Log.i(TAG, message);
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
             }
         });
         upload.uploadViewsActivityData("POST", activityTable);

@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -54,6 +55,8 @@ import com.onlylemi.parse.info.ActivityTable;
 import com.onlylemi.parse.info.UserPositionTable;
 import com.onlylemi.utils.Assist;
 import com.onlylemi.utils.Constants;
+import com.onlylemi.view.dialog.AddViewsActivityDialog;
+import com.onlylemi.view.dialog.LoginDialog;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -95,6 +98,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     private Button floor_2;
     private Button floor_3;
     private PopupWindow morePop;
+    private ImageView addViewActivityBtn;
 
     //mapview
     private MapView mapView;
@@ -106,6 +110,9 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     private RouteOverlay routeOverlay;
     private MarkOverlay markOverlay;
     private BitmapOverlay bitmapOverlay;
+    //路线list
+    private List<Integer> routeList;
+    private List<Float> routeListDegrees;
 
     //加载
     private RelativeLayout progress;
@@ -140,6 +147,8 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     private ListView listViewActivity;
     private ViewsActivityAdapter viewsActivityAdapter;
 
+    private float startDegree;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_indoor);
@@ -161,6 +170,8 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         mapView = (MapView) findViewById(R.id.mapview);
         imgPosition = (ImageView) findViewById(R.id.position_btn);
         imgCameraPosition = (ImageView) findViewById(R.id.camera_position);
+
+        addViewActivityBtn = (ImageView) findViewById(R.id.add_views_activity_btn);
 
         //传感器
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -187,6 +198,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         imgPosition.setOnClickListener(this);
         imgCameraPosition.setOnClickListener(this);
         listViewActivity.setOnItemClickListener(this);
+        addViewActivityBtn.setOnClickListener(this);
 
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL);
@@ -450,7 +462,11 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        if (v == layout_all) {
+        if (v == addViewActivityBtn) {
+//            AddViewsActivityDialog dialog = new AddViewsActivityDialog(this, views);
+            LoginDialog dialog = new LoginDialog(this);
+            dialog.show();
+        } else if (v == layout_all) {
             showListPop();
         } else if (v == floor_1) {
             changeTextView(v);
@@ -506,12 +522,14 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
         } else if (v == mark_route) {
             markPop.dismiss();
-            List<Integer> routeList = new ArrayList<>();
+            routeList = new ArrayList<>();
 
             PointF target = new PointF(views.get(markOverlay.getNum()).x, views.get(markOverlay.getNum()).y);
 
             routeList = com.onlylemi.map.utils.Assist.getShortestDistanceBetweenTwoPoints(locationOverlay.getPosition(),
                     target, nodes, nodesContact);
+            routeListDegrees = com.onlylemi.map.utils.Assist.getDegreeBetweenTwoPointsWithVertical(routeList, nodes);
+            Log.i(TAG, routeListDegrees.toString());
 
             if (mapView.isMapLoadFinsh()) {
                 routeOverlay.setNodeList(nodes);
@@ -705,6 +723,21 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
             if (isMapViewSmall) {
                 mapView.getController().setMapCenterWithPoint(locationOverlay.getPosition());
                 mapView.getController().setCurrentRotationDegrees(mapDegree + degree);
+                if (routeListDegrees != null) {
+                    float routeDegree = (routeListDegrees.get(0) + mapView.getCurrentRotateDegrees()) % 360.0f;
+                    if (routeDegree > 180.0f) {
+                        routeDegree = routeDegree - 360.0f;
+                    } else if (routeDegree < -180.0f) {
+                        routeDegree = routeDegree + 360.0f;
+                    }
+
+                    if (Math.abs(routeDegree - startDegree) > 10) {
+                        routeCameraSurface.setRotateDegree(routeDegree);
+                        routeCameraSurface.refresh();
+                        startDegree = routeDegree;
+                    }
+                    //Log.i(TAG, "routeDegree:" + routeDegree + "");
+                }
             }
 
             locationOverlay.setIndicatorCircleRotateDegree(degree);
