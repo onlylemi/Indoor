@@ -56,9 +56,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="20dip"
+                android:layout_marginRight="10dip"
                 android:layout_marginTop="30dip"
-                android:src="@drawable/position_slector" />
+                android:src="@drawable/camera_position_selector" />
 
             <include layout="@layout/include_no_data" />
 

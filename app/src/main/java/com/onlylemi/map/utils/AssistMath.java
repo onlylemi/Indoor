@@ -14,7 +14,7 @@ import com.onlylemi.map.utils.math.TSPNearestNeighbour;
  */
 public class AssistMath {
 
-    private static final String TAG = "TestActivity";
+    private static final String TAG = "AssistMath:";
 
     /**
      * 得到两点之间的距离
@@ -77,11 +77,49 @@ public class AssistMath {
      * @param end
      * @return
      */
-    public static float getAngleBetweenTwoPointsWithLevel(PointF start, PointF end) {
+    public static float getDegreeBetweenTwoPointsWithHorizontal(PointF start, PointF end) {
         float angle = 90.0f;
         if (start.x != end.x) {
             angle = (float) Math.toDegrees(Math.atan((end.y - start.y)
                     / (end.x - start.x)));
+            if (end.x < start.x && end.y >= start.y) {
+                angle = angle + 180.0f;
+            } else if (end.x < start.x && end.y > start.y) {
+                angle = angle - 180.f;
+            }
+        } else {
+            if (start.y < end.y) {
+                angle = 90.0f;
+            } else if (start.y > end.y) {
+                angle = -90.0f;
+            }
+        }
+        return angle;
+    }
+
+    /**
+     * 得到两点连线与垂直面所成夹角
+     *
+     * @param start
+     * @param end
+     * @return
+     */
+    public static float getDegreeBetweenTwoPointsWithVertical(PointF start, PointF end) {
+        float angle = 90.0f;
+        if (start.y != end.y) {
+            angle = -(float) Math.toDegrees(Math.atan((end.x - start.x)
+                    / (end.y - start.y)));
+            if (end.y > start.y && end.x >= start.x) {
+                angle = angle + 180.0f;
+            } else if (end.y > start.y && end.x > start.x) {
+                angle = angle - 180.f;
+            }
+        } else {
+            if (start.x < end.x) {
+                angle = 90.0f;
+            } else if (start.x > end.x) {
+                angle = -90.0f;
+            }
         }
         return angle;
     }

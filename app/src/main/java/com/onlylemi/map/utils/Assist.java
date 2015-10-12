@@ -47,6 +47,38 @@ public class Assist {
     }
 
     /**
+     * 得到list表中 两点间与水平线所成的夹角集
+     *
+     * @param routeList
+     * @param nodes
+     * @return
+     */
+    public static List<Float> getDegreeBetweenTwoPointsWithHorizontal(List<Integer> routeList, List<PointF> nodes) {
+        List<Float> routeListDegrees = new ArrayList<>();
+        for (int i = 0; i < routeList.size() - 1; i++) {
+            routeListDegrees.add(AssistMath.getDegreeBetweenTwoPointsWithHorizontal(nodes.get(routeList.get(i)),
+                    nodes.get(routeList.get(i + 1))));
+        }
+        return routeListDegrees;
+    }
+
+    /**
+     * 得到list表中 两点间与垂直线所成的夹角集
+     *
+     * @param routeList
+     * @param nodes
+     * @return
+     */
+    public static List<Float> getDegreeBetweenTwoPointsWithVertical(List<Integer> routeList, List<PointF> nodes) {
+        List<Float> routeListDegrees = new ArrayList<>();
+        for (int i = 0; i < routeList.size() - 1; i++) {
+            routeListDegrees.add(AssistMath.getDegreeBetweenTwoPointsWithVertical(nodes.get(routeList.get(i)),
+                    nodes.get(routeList.get(i + 1))));
+        }
+        return routeListDegrees;
+    }
+
+    /**
      * 得到地图中两点间的最短路径点集list
      *
      * @param start        起点

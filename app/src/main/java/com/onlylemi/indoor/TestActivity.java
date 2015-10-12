@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -62,6 +63,7 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
     private MarkOverlay markOverlay;
 
     private List<Integer> routeList; //路线list
+    private List<Float> routeListDegrees;
 
     private PopupWindow markPop;
 
@@ -225,9 +227,9 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
         button2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent().setClass(TestActivity.this, IndoorActivity.class));
-                AddViewsActivityDialog dialog = new AddViewsActivityDialog(TestActivity.this, views, new Handler());
-                dialog.show();
+                startActivity(new Intent().setClass(TestActivity.this, IndoorActivity.class));
+                /*AddViewsActivityDialog dialog = new AddViewsActivityDialog(TestActivity.this, views, new Handler());
+                dialog.show();*/
 
             }
         });
@@ -327,6 +329,8 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
 
             routeList = Assist.getShortestDistanceBetweenTwoPoints(locationOverlay.getPosition(),
                     target, nodes, nodesContact);
+            routeListDegrees = com.onlylemi.map.utils.Assist.getDegreeBetweenTwoPointsWithVertical(routeList, nodes);
+            Log.i(TAG, routeListDegrees.toString());
 
             if (mapView.isMapLoadFinsh()) {
                 routeOverlay.setNodeList(nodes);
@@ -425,13 +429,23 @@ public class TestActivity extends AppCompatActivity implements OnClickListener,
         if (mapView.isMapLoadFinsh()) {
             float degree = 0;
             if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-                degree = -event.values[0];
+                degree = event.values[0];
             }
-            //mapView.getController().setMapCenterWithPoint(locationOverlay.getPosition());
-            locationOverlay.setIndicatorCircleRotateDegree(degree);
-            //mapView.getController().setCurrentRotationDegrees(mapDegree + degree);
-            locationOverlay.setIndicatorArrowRotateDegree(mapDegree + mapView.getCurrentRotateDegrees() - degree);
 
+            //mapView.getController().setMapCenterWithPoint(locationOverlay.getPosition());
+            //mapView.getController().setCurrentRotationDegrees(mapDegree - degree);
+
+            locationOverlay.setIndicatorCircleRotateDegree(-degree);
+            locationOverlay.setIndicatorArrowRotateDegree(mapDegree + mapView.getCurrentRotateDegrees() + degree);
+            if (routeListDegrees != null) {
+                float dddd = (routeListDegrees.get(1) + mapView.getCurrentRotateDegrees()) % 360.0f;
+                if (dddd > 180.0f) {
+                    dddd = dddd - 360.0f;
+                } else if (dddd < -180.0f) {
+                    dddd = dddd + 360.0f;
+                }
+                Log.i(TAG, "routeDegree:" + dddd + "");
+            }
             mapView.refresh();
         }
     }

@@ -1,144 +1,149 @@
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_every_part_refresh"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context="com.onlylemi.dr.activity.EveryPartActivity">
-
-    <ScrollView
-        android:id="@+id/id_scroll"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_every_part_refresh"
+        >
+        <ScrollView
+            android:id="@+id/id_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <FrameLayout
-                android:id="@+id/layput"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/lightblue"
-                android:paddingBottom="10dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="550dp">
-
-                    <ImageView
-                        android:id="@+id/activity_every_part_image_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="280dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="10dp" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:id="@+id/activity_every_part_description_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingExtra="2dp"
-                        android:lineSpacingMultiplier="1.1"
-                        android:paddingBottom="20dp"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:paddingTop="20dp"
-                        android:textColor="@color/pale_black"
-                        android:textSize="16sp" />
-
-                    <LinearLayout
-                        android:id="@+id/id_linearLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/activity_every_part_description_text_view"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_business_black_24dp" />
-
-                        <TextView
-                            android:id="@+id/views_activity_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginTop="10dp"
-                            android:text="七杯茶"
-                            android:textColor="@color/base_color_text_gray"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/id_linearLayout"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@mipmap/ic_place_black_24dp" />
-
-                        <TextView
-                            android:id="@+id/views_activity_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginTop="10dp"
-                            android:text="中北大学文瀛路西侧"
-                            android:textColor="@color/base_color_text_gray"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </RelativeLayout>
-            </FrameLayout>
-
-
-            <com.onlylemi.dr.custom_view.MyGridView
-                android:id="@+id/activity_every_part_grid_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/layput"
+            <RelativeLayout
                 android:background="@color/white"
-                android:clickable="true"
-                android:horizontalSpacing="10dp"
-                android:numColumns="2"
-                android:scrollbars="none"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="5dp">
-
-            </com.onlylemi.dr.custom_view.MyGridView>
-
-            <Button
-                android:id="@+id/activity_every_part_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/activity_every_part_grid_view"
-                android:layout_margin="10dp"
-                android:background="@drawable/every_part_background"
-                android:text="开始行程"
-                android:textSize="18sp"
-                android:textColor="@color/red" />
-        </RelativeLayout>
+                android:layout_height="match_parent">
 
-    </ScrollView>
-</android.support.v4.widget.SwipeRefreshLayout>
+                <FrameLayout
+                    android:id="@+id/layput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/lightblue"
+                    android:paddingBottom="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="550dp">
+
+                        <ImageView
+                            android:id="@+id/activity_every_part_image_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="280dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginBottom="10dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:id="@+id/activity_every_part_description_text_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="2dp"
+                            android:lineSpacingMultiplier="1.1"
+                            android:paddingBottom="20dp"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:paddingTop="20dp"
+                            android:textColor="@color/pale_black"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:id="@+id/id_linearLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/activity_every_part_description_text_view"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_business_black_24dp" />
+
+                            <TextView
+                                android:id="@+id/views_activity_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="10dp"
+                                android:text="七杯茶"
+                                android:textColor="@color/base_color_text_gray"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/id_linearLayout"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@mipmap/ic_place_black_24dp" />
+
+                            <TextView
+                                android:id="@+id/views_activity_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="10dp"
+                                android:text="中北大学文瀛路西侧"
+                                android:textColor="@color/base_color_text_gray"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </FrameLayout>
+
+
+                <com.onlylemi.dr.custom_view.MyGridView
+                    android:id="@+id/activity_every_part_grid_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layput"
+                    android:background="@color/white"
+                    android:clickable="true"
+                    android:horizontalSpacing="10dp"
+                    android:numColumns="2"
+                    android:scrollbars="none"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="5dp"
+                    android:layout_marginBottom="65dp">
+
+                </com.onlylemi.dr.custom_view.MyGridView>
+
+            </RelativeLayout>
+
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <Button
+        android:id="@+id/activity_every_part_button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/every_part_background"
+        android:text="开始行程"
+        android:textSize="18sp"
+        android:textColor="@color/red" />
+</RelativeLayout>

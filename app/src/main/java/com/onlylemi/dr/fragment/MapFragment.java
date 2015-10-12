@@ -106,10 +106,10 @@ public class MapFragment extends Fragment implements BaiduMap.OnMarkerClickListe
         if (initLocation()) {
             initPlace();
         } else {
-            if(!NetworkJudge.isWifiEnabled(mContext)) {
+            if(NetworkJudge.isWifiEnabled(mContext)) {
                 Toast.makeText(mContext, "初始化定位失败， 请手动选择城市 ", Toast.LENGTH_LONG).show();
             }else {
-                Toast.makeText(mContext, "初始化定位失败， no-wifi ", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "初始化定位失败，  no wi-fi", Toast.LENGTH_LONG).show();
             }
         }
         return view;

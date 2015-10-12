@@ -1,5 +1,6 @@
 package com.onlylemi.view.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -27,47 +28,35 @@ public class LoginDialog extends Dialog implements JSONUpload.OnUploadDataListen
 
 
     private static final String TAG = LoginDialog.class.getSimpleName();
-    private Context context;
+    private Activity activity;
     private EditText editTextName;
     private EditText editTextPassword;
     private Button buttonLogin;
     private String urlString;
 
 
-    public LoginDialog(Context context) {
-        super(context);
-        this.context = context;
+    public LoginDialog(Activity activity) {
+        super(activity);
+        this.activity = activity;
+
+
     }
 
     public static String md5(String string) {
 
         byte[] hash;
-
         try {
-
             hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
-
         } catch (NoSuchAlgorithmException e) {
-
             throw new RuntimeException("Huh, MD5 should be supported?", e);
-
         } catch (UnsupportedEncodingException e) {
-
             throw new RuntimeException("Huh, UTF-8 should be supported?", e);
-
         }
-
-
         StringBuilder hex = new StringBuilder(hash.length * 2);
-
         for (byte b : hash) {
-
             if ((b & 0xFF) < 0x10) hex.append("0");
-
             hex.append(Integer.toHexString(b & 0xFF));
-
         }
-
         return hex.toString();
 
     }
@@ -81,7 +70,7 @@ public class LoginDialog extends Dialog implements JSONUpload.OnUploadDataListen
         editTextPassword = (EditText) findViewById(R.id.dialog_login_pw);
         buttonLogin = (Button) findViewById(R.id.dialog_login_login);
 
-        setTitle(context.getResources().getString(R.string.login));
+        setTitle(activity.getResources().getString(R.string.login));
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +79,7 @@ public class LoginDialog extends Dialog implements JSONUpload.OnUploadDataListen
                 UserTable userTable = new UserTable();
                 userTable.setEmail(name);
                 userTable.setPassword(MD5.getMD5Code(pw));
-                JSONUpload upload = new JSONUpload(ReadyActivity.handler);
+                JSONUpload upload = new JSONUpload(activity);
                 upload.setOnUploadDataListener(LoginDialog.this);
                 upload.uploadUserData("POST", userTable);
                 Log.i(TAG, name + "-----" + MD5.getMD5Code(pw));
@@ -101,12 +90,12 @@ public class LoginDialog extends Dialog implements JSONUpload.OnUploadDataListen
 
     @Override
     public void onSuccess(int success, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onFail(int success, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
     }
 
 }
