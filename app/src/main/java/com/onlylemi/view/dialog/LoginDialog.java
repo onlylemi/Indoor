@@ -2,7 +2,6 @@ package com.onlylemi.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,19 +9,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.onlylemi.dr.activity.ReadyActivity;
 import com.onlylemi.indoor.R;
+import com.onlylemi.parse.JSONUpload;
+import com.onlylemi.parse.info.UserTable;
+import com.onlylemi.utils.MD5;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by 董神 on 2015/10/10.
  * I love programming
  */
-public class LoginDialog extends Dialog {
+public class LoginDialog extends Dialog implements JSONUpload.OnUploadDataListener {
 
 
     private static final String TAG = LoginDialog.class.getSimpleName();
@@ -38,6 +39,39 @@ public class LoginDialog extends Dialog {
         this.context = context;
     }
 
+    public static String md5(String string) {
+
+        byte[] hash;
+
+        try {
+
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+
+        } catch (NoSuchAlgorithmException e) {
+
+            throw new RuntimeException("Huh, MD5 should be supported?", e);
+
+        } catch (UnsupportedEncodingException e) {
+
+            throw new RuntimeException("Huh, UTF-8 should be supported?", e);
+
+        }
+
+
+        StringBuilder hex = new StringBuilder(hash.length * 2);
+
+        for (byte b : hash) {
+
+            if ((b & 0xFF) < 0x10) hex.append("0");
+
+            hex.append(Integer.toHexString(b & 0xFF));
+
+        }
+
+        return hex.toString();
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,56 +79,34 @@ public class LoginDialog extends Dialog {
 
         editTextName = (EditText) findViewById(R.id.dialog_login_name);
         editTextPassword = (EditText) findViewById(R.id.dialog_login_pw);
-        buttonLogin = (Button)findViewById(R.id.dialog_login_login);
+        buttonLogin = (Button) findViewById(R.id.dialog_login_login);
 
         setTitle(context.getResources().getString(R.string.login));
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "跳转成功", Toast.LENGTH_LONG).show();
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                new UserLoginTask().execute();
+                String name = editTextName.getText().toString();
+                String pw = editTextPassword.getText().toString();
+                UserTable userTable = new UserTable();
+                userTable.setEmail(name);
+                userTable.setPassword(MD5.getMD5Code(pw));
+                JSONUpload upload = new JSONUpload(ReadyActivity.handler);
+                upload.setOnUploadDataListener(LoginDialog.this);
+                upload.uploadUserData("POST", userTable);
+                Log.i(TAG, name + "-----" + MD5.getMD5Code(pw));
+//                new UserLoginTask().execute();
             }
         });
     }
 
-    private class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            Log.i(TAG, "end");
-            dismiss();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            Log.i(TAG, "start");
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                URL url = new URL(urlString);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setReadTimeout(5000);
-                connection.connect();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuffer stringBuffer = new StringBuffer("");
-                String s = "测试中";
-                while((s = reader.readLine()) != null) {
-                    stringBuffer.append(s);
-                }
-                Log.i(TAG, s);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Log.i(TAG, "faile");
-            return true;
-        }
+    @Override
+    public void onSuccess(int success, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void onFail(int success, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
+
 }

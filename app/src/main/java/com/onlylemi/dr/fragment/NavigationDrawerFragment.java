@@ -101,7 +101,6 @@ public class NavigationDrawerFragment extends Fragment implements SearchView.OnQ
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = (View) inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-
         mDrawerListView = (ListView) view.findViewById(R.id.mylist);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

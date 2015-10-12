@@ -1,7 +1,13 @@
 package com.onlylemi.parse;
 
 
-import com.onlylemi.parse.info.*;
+import com.onlylemi.parse.info.ActivityTable;
+import com.onlylemi.parse.info.CityTable;
+import com.onlylemi.parse.info.FloorPlanTable;
+import com.onlylemi.parse.info.NodesContactTable;
+import com.onlylemi.parse.info.NodesTable;
+import com.onlylemi.parse.info.PlaceTable;
+import com.onlylemi.parse.info.ViewsTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +20,7 @@ import java.util.List;
 public class Data {
 
     public static List<ActivityTable> activityTableList = new ArrayList<>();
-    public static List<CityTable> cityTableList = new ArrayList<>();
+    private static List<CityTable> cityTableList = new ArrayList<>();
     public static List<FloorPlanTable> floorPlanTableList = new ArrayList<>();
     public static List<NodesContactTable> nodesContactTableList = new ArrayList<>();
     public static List<NodesTable> nodesTableList = new ArrayList<>();
@@ -28,14 +34,12 @@ public class Data {
      * @return 城市列表
      */
     public static List<String> getOnlyCity() {
-        if (strings == null) {
-            strings = new ArrayList<>();
+        List<String> string = new ArrayList<>();
             for (int i = 0; i < cityTableList.size(); i++) {
                 String s = cityTableList.get(i).getName();
-                strings.add(s);
+                string.add(s);
             }
-        }
-        return strings;
+        return string;
     }
 
     public static int getCityId(String city) {
@@ -109,4 +113,9 @@ public class Data {
         }
         return list;
     }
+
+    public synchronized static List<CityTable> getCityTableList() {
+            return cityTableList;
+    }
+
 }

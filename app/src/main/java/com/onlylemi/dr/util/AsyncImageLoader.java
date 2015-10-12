@@ -232,7 +232,6 @@ public class AsyncImageLoader {
                     // 将图片加入到内存缓存中
                     putBitmapToMem(imageUrl, bitmap);
                 }
-
                 return bitmap;
             } catch (IOException e) {
                 e.printStackTrace();
