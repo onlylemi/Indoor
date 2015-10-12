@@ -68,10 +68,10 @@ public class MainActivity extends AppCompatActivity
             mTitle = BaiduLocate.getCurrentCity();
             Assist.currentCity = (String)mTitle;
             Assist.currentCityID = Data.getCityId(BaiduLocate.getCurrentCity());
-            for (int i = 0; i < Data.cityTableList.size(); i++) {
-                Log.i(TAG, mTitle + "==" + Data.cityTableList.get(i));
-                if (mTitle.equals(Data.cityTableList.get(i).getName())) {
-                    findFragment.setCityID(Data.cityTableList.get(i).getId());
+            for (int i = 0; i < Data.getCityTableList().size(); i++) {
+                Log.i(TAG, mTitle + "==" + Data.getCityTableList().get(i));
+                if (mTitle.equals(Data.getCityTableList().get(i).getName())) {
+                    findFragment.setCityID(Data.getCityTableList().get(i).getId());
                     Log.i(TAG, "开始更新");
                     findFragment.upDate();
                     break;
@@ -95,14 +95,14 @@ public class MainActivity extends AppCompatActivity
             Log.i(this.TAG, "select of city : " + city);
             mMapFragment.updateMap(city, city);
             mTitle = city;
-            for (int i = 0; i < Data.cityTableList.size(); i++) {
-                Log.i(TAG, city + "==" + Data.cityTableList.get(i).getName());
-                if (city.equals(Data.cityTableList.get(i).getName())) {
-                    findFragment.setCityID(Data.cityTableList.get(i).getId());
+            for (int i = 0; i < Data.getCityTableList().size(); i++) {
+                Log.i(TAG, city + "==" + Data.getCityTableList().get(i).getName());
+                if (city.equals(Data.getCityTableList().get(i).getName())) {
+                    findFragment.setCityID(Data.getCityTableList().get(i).getId());
                     Log.i(TAG, "开始更新");
                     findFragment.upDate();
                     Assist.currentCity = city;
-                    Assist.currentCityID = Data.cityTableList.get(i).getId();
+                    Assist.currentCityID = Data.getCityTableList().get(i).getId();
                     break;
                 }
             }

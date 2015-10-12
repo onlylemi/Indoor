@@ -1,10 +1,10 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/custom</item>
+        <item name="colorPrimaryDark">@color/custom</item>
+        <item name="colorAccent">@color/custom</item>
         <!-- Customize your theme here. -->
-        <item name="android:actionBarStyle">@style/myActionBarStyle</item>
-        <item name="actionBarStyle">@style/myActionBarStyle</item>
     </style>
     <!-- Base application theme. -->
     <style name="Smile">

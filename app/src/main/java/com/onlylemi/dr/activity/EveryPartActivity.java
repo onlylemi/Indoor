@@ -107,7 +107,7 @@ public class EveryPartActivity extends AppCompatActivity {
             }
         });
 
-        button = (Button) findViewById(R.id.activity_every_part_position_button);
+        button = (Button) findViewById(R.id.activity_every_part_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

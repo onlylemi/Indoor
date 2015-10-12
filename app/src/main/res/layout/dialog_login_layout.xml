@@ -8,20 +8,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/login_name_hint"
-        android:textColorHint="@color/salmon"/>
+        android:singleLine="true"
+        android:textColorHint="@color/salmon" />
+
     <EditText
         android:id="@+id/dialog_login_pw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_login_name"
+        android:inputType="textPassword"
         android:hint="@string/login_pw_hint"
-        android:textColorHint="@color/salmon"/>
+        android:textColorHint="@color/salmon" />
+
     <Button
         android:id="@+id/dialog_login_login"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_login_pw"
         android:layout_centerHorizontal="true"
-        android:text="@string/login"/>
+        android:text="@string/login" />
 
 </RelativeLayout>

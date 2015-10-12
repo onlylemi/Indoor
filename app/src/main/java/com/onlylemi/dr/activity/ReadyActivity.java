@@ -17,6 +17,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.onlylemi.dr.costant_interface.Constant;
 import com.onlylemi.dr.util.AsyncImageLoader;
 import com.onlylemi.dr.util.BaiduLocate;
+import com.onlylemi.dr.util.CheckThread;
 import com.onlylemi.dr.util.DiskLruCache;
 import com.onlylemi.dr.util.JSONHttp;
 import com.onlylemi.dr.util.NetworkJudge;
@@ -40,13 +41,13 @@ import java.io.OutputStream;
 
 public class ReadyActivity extends Activity {
 
-    private static final String TAG = "ReadyActivity:";
+    public static final String TAG = "ReadyActivity:";
 
     private static final int DISK_CACHE_DEFAULT_SIZE = 5 * 1024 * 1024;
     //延时 handler
     public static Handler handler;
     //表名列表
-    private final String CityTableName = CityTable.class.getSimpleName();
+    private final String CityTableName = "CityTable";
     private final String FloorPlanTableName = "FloorPlanTable";
     private final String NodesContactTableName = "NodesContactTable";
     private final String PlaceTableName = "PlaceTable";
@@ -71,6 +72,13 @@ public class ReadyActivity extends Activity {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case Constant.READY_GO:
+                        Log.e(TAG, "NodesContact number : " + Data.nodesContactTableList.size());
+                        Log.e(TAG, "city number : " + Data.getCityTableList().size());
+                        Log.e(TAG, "Nodes number : " + Data.nodesTableList.size());
+                        Log.e(TAG, "floorplan number : " + Data.floorPlanTableList.size());
+                        Log.e(TAG, "views number : " + Data.viewTableList.size());
+                        Log.e(TAG, "palce number : " + Data.placeTableList.size());
+                        Log.e(TAG, "activity number : " + Data.activityTableList.size());
                         Intent intent = new Intent(ReadyActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
@@ -105,15 +113,15 @@ public class ReadyActivity extends Activity {
             editor.putInt("Flag", 1);
             JSONParse();//由于数据比较少，直接解析所有JSON数据 存到本地
             editor.apply();
-        } else if (flag % 5 == 0) {
+        } else if (flag % 10 == 0) {
             JSONParse();//由于数据比较少，直接解析所有JSON数据 存到本地
             editor.putInt("Flag", ++flag);
-            Log.i("Test", "network::::" + flag);
+            Log.i("Test", "network::::" + --flag);
             editor.apply();
         } else {
             JSONParseFromFile();//从本地获取
             editor.putInt("Flag", ++flag);
-            Log.i("Test", "file::::" + flag);
+            Log.i("Test", "file::::" + --flag);
             editor.apply();
         }
 
@@ -149,40 +157,15 @@ public class ReadyActivity extends Activity {
         }
 
         setContentView(R.layout.activity_ready);
+
+        CheckThread.getCheckThread().start();
     }
 
     /**
      * 所有JSON解析
      */
     private void JSONParse() {
-        //城市列表 初始化
-        String url = "http://indoor.onlylemi.com/android/?r=city";
-        new JSONHttp(url, new JSONHttp.JSONHttpReturn() {
-            @Override
-            public void JSONReturn(String s) {
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    JSONArray arrays = jsonObject.getJSONArray("city");
-                    Data.cityTableList.clear();
-                    for (int i = 0; i < arrays.length(); i++) {
-                        CityTable city = new CityTable();
-                        JSONObject object = arrays.getJSONObject(i);
-                        city.setName(object.getString("name"));
-                        city.setId(object.getInt("id"));
-                        Data.cityTableList.add(city);
-                    }
-                    write(CityTableName, s);//写入缓存
-                    handler.sendEmptyMessageDelayed(Constant.READY_GO, 2000);
-                    Log.i(TAG, "city number : " + Data.cityTableList.size());
-                } catch (Exception e) {
-                    Log.e(TAG, "解析城市列表时出错");
-                    e.printStackTrace();
-                }
-
-            }
-        }).start();
-
-        url = "http://indoor.onlylemi.com/android/?r=place";
+        String url = "http://indoor.onlylemi.com/android/?r=place";
         //所有地方信息初始化
         new JSONHttp(url, new JSONHttp.JSONHttpReturn() {
             @Override
@@ -205,7 +188,11 @@ public class ReadyActivity extends Activity {
                         Data.placeTableList.add(placeTable);
                     }
                     write(PlaceTableName, s);//写入缓存
-                    Log.i(TAG, "palce number : " + Data.placeTableList.size());
+                    if(Data.placeTableList.size() == 0) {
+                        Log.e(TAG, "palce number : " + Data.placeTableList.size());
+                    }else {
+                        Log.i(TAG, "palce number : " + Data.placeTableList.size());
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "解析difang列表时出错");
                     e.printStackTrace();
@@ -235,7 +222,11 @@ public class ReadyActivity extends Activity {
                         Data.activityTableList.add(activityTable);
                     }
                     write(ActivityTableName, s);//写入缓存
-                    Log.i(TAG, "activity number : " + Data.activityTableList.size());
+                    if(Data.activityTableList.size() == 0) {
+                        Log.e(TAG, "activity number : " + Data.activityTableList.size());
+                    }else {
+                        Log.i(TAG, "activity number : " + Data.activityTableList.size());
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "解析活动列表时出错");
                     e.printStackTrace();
@@ -267,7 +258,11 @@ public class ReadyActivity extends Activity {
                         Data.viewTableList.add(viewsTable);
                     }
                     write(ViewsTableName, s);//写入缓存
-                    Log.i(TAG, "views number : " + Data.viewTableList.size());
+                    if(Data.viewTableList.size() == 0) {
+                        Log.e(TAG, "views number : " + Data.viewTableList.size());
+                    }else {
+                        Log.i(TAG, "views number : " + Data.viewTableList.size());
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "解析views列表时出错");
                     e.printStackTrace();
@@ -297,7 +292,11 @@ public class ReadyActivity extends Activity {
                         Data.floorPlanTableList.add(floorPlanTable);
                     }
                     write(FloorPlanTableName, s);//写入缓存
-                    Log.i(TAG, "floorplan number : " + Data.floorPlanTableList.size());
+                    if(Data.floorPlanTableList.size() == 0) {
+                        Log.e(TAG, "floorplan number : " + Data.floorPlanTableList.size());
+                    }else {
+                        Log.i(TAG, "floorplan number : " + Data.floorPlanTableList.size());
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "解析floorplan列表时出错");
                     e.printStackTrace();
@@ -325,7 +324,11 @@ public class ReadyActivity extends Activity {
                         Data.nodesContactTableList.add(nodesContact);
                     }
                     write(NodesContactTableName, s);//写入缓存
-                    Log.i(TAG, "NodesContact number : " + Data.nodesContactTableList.size());
+                    if(Data.nodesContactTableList.size() == 0) {
+                        Log.e(TAG, "NodesContact number : " + Data.nodesContactTableList.size());
+                    }else {
+                        Log.i(TAG, "NodesContact number : " + Data.nodesContactTableList.size());
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "解析nodesContactList列表时出错" + e.toString());
                     e.printStackTrace();
@@ -340,7 +343,7 @@ public class ReadyActivity extends Activity {
             public void JSONReturn(String s) {
                 try {
                     Data.activityTableList.clear();
-                    Data.cityTableList.clear();
+                    Data.getCityTableList().clear();
                     Data.floorPlanTableList.clear();
                     Data.viewTableList.clear();
                     Data.nodesContactTableList.clear();
@@ -361,12 +364,50 @@ public class ReadyActivity extends Activity {
                         Data.nodesTableList.add(nodesTable);
                     }
                     write(NodesTableName, s);//写入缓存
-                    Log.i(TAG, "Nodes number : " + Data.nodesTableList.size());
+                    if(Data.nodesTableList.size() == 0) {
+                        Log.e(TAG, "Nodes number : " + Data.nodesTableList.size());
+                    }else {
+                        Log.i(TAG, "Nodes number : " + Data.nodesTableList.size());
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "解析nodes列表时出错" + e.toString());
                 }
             }
         }).start();
+
+        //城市列表 初始化
+        url = "http://indoor.onlylemi.com/android/?r=city";
+        JSONHttp http = new JSONHttp(url, new JSONHttp.JSONHttpReturn() {
+            @Override
+            public void JSONReturn(String s) {
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONArray arrays = jsonObject.getJSONArray("city");
+                    Data.getCityTableList().clear();
+                    for (int i = 0; i < arrays.length(); i++) {
+                        CityTable city = new CityTable();
+                        JSONObject object = arrays.getJSONObject(i);
+                        city.setName(object.getString("name"));
+                        city.setId(object.getInt("id"));
+                        Data.getCityTableList().add(city);
+                    }
+                    write(CityTableName, s);//写入缓存
+                    if(Data.getCityTableList().size() == 0) {
+                        Thread.sleep(1000);
+                        Log.e(TAG, "city number : " + Data.getCityTableList().size());
+                    }else {
+                        Log.i(TAG, "city number : " + Data.getCityTableList().size());
+                    }
+                    Log.w(ReadyActivity.TAG, "size ===== " + Data.getCityTableList().size());
+                    handler.sendEmptyMessageDelayed(Constant.READY_GO, 500);
+                } catch (Exception e) {
+                    Log.e(TAG, "解析城市列表时出错");
+                    e.printStackTrace();
+                }
+            }
+        });
+        http.setPriority(Thread.MIN_PRIORITY);
+        http.start();
     }
 
     private void JSONParseFromFile() {
@@ -374,7 +415,7 @@ public class ReadyActivity extends Activity {
             @Override
             public void run() {
                 Data.activityTableList.clear();
-                Data.cityTableList.clear();
+                Data.getCityTableList().clear();
                 Data.floorPlanTableList.clear();
                 Data.viewTableList.clear();
                 Data.nodesContactTableList.clear();
@@ -385,16 +426,16 @@ public class ReadyActivity extends Activity {
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     JSONArray arrays = jsonObject.getJSONArray("city");
-                    Data.cityTableList.clear();
+                    Data.getCityTableList().clear();
                     for (int i = 0; i < arrays.length(); i++) {
                         CityTable city = new CityTable();
                         JSONObject object = arrays.getJSONObject(i);
                         city.setName(object.getString("name"));
                         city.setId(object.getInt("id"));
-                        Data.cityTableList.add(city);
+                        Data.getCityTableList().add(city);
                     }
+                    Log.i(TAG, "city number : " + Data.getCityTableList().size());
                     handler.sendEmptyMessageDelayed(Constant.READY_GO, 2000);
-                    Log.i(TAG, "city number : " + Data.cityTableList.size());
                 } catch (Exception e) {
                     Log.e(TAG, "解析城市列表时出错");
                     e.printStackTrace();
