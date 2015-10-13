@@ -5,21 +5,23 @@ import com.onlylemi.dr.costant_interface.Constant;
 /**
  * Created by 董神 on 2015/10/13.
  * I love programming
- */
+ * <p/>
+ * 刷新时应该调用的方法
+ **/
 public class UpdateThread {
 
     private static UpdateThread instance = null;
     private DiskCache diskCache;
 
+    private UpdateThread() {
+        diskCache = DiskCache.getInstance();
+    }
+
     public static UpdateThread getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new UpdateThread();
         }
         return instance;
-    }
-
-    private UpdateThread() {
-        diskCache = DiskCache.getInstance();
     }
 
     public void updateActivity(final UpdateListener listener) {
@@ -27,9 +29,9 @@ public class UpdateThread {
             @Override
             public void JSONReturn(String s) {
                 diskCache.write(diskCache.ActivityTableName, s);
-                if(JSONParse.parseActivity(s)) {
+                if (JSONParse.parseActivity(s)) {
                     listener.success();
-                }else {
+                } else {
                     listener.faile();
                 }
 
@@ -42,9 +44,9 @@ public class UpdateThread {
             @Override
             public void JSONReturn(String s) {
                 diskCache.write(diskCache.CityTableName, s);
-                if(JSONParse.parseCity(s)) {
+                if (JSONParse.parseCity(s)) {
                     listener.success();
-                }else {
+                } else {
                     listener.faile();
                 }
             }
@@ -56,9 +58,9 @@ public class UpdateThread {
             @Override
             public void JSONReturn(String s) {
                 diskCache.write(diskCache.PlaceTableName, s);
-                if(JSONParse.parsePlace(s)) {
+                if (JSONParse.parsePlace(s)) {
                     listener.success();
-                }else {
+                } else {
                     listener.faile();
                 }
             }
@@ -70,9 +72,9 @@ public class UpdateThread {
             @Override
             public void JSONReturn(String s) {
                 diskCache.write(diskCache.FloorPlanTableName, s);
-                if(JSONParse.parseFloor(s)){
+                if (JSONParse.parseFloor(s)) {
                     listener.success();
-                }else {
+                } else {
                     listener.faile();
                 }
             }
@@ -84,9 +86,9 @@ public class UpdateThread {
             @Override
             public void JSONReturn(String s) {
                 diskCache.write(diskCache.NodesTableName, s);
-                if(JSONParse.parseNodes(s)) {
-                   listener.success();
-                }else {
+                if (JSONParse.parseNodes(s)) {
+                    listener.success();
+                } else {
                     listener.faile();
                 }
             }
@@ -98,9 +100,9 @@ public class UpdateThread {
             @Override
             public void JSONReturn(String s) {
                 diskCache.write(diskCache.NodesContactTableName, s);
-                if(JSONParse.parseNodesContact(s)) {
-                   listener.success();
-                }else{
+                if (JSONParse.parseNodesContact(s)) {
+                    listener.success();
+                } else {
                     listener.faile();
                 }
             }
@@ -112,9 +114,9 @@ public class UpdateThread {
             @Override
             public void JSONReturn(String s) {
                 diskCache.write(diskCache.ViewsTableName, s);
-                if(JSONParse.parseView(s)){
-                   listener.success();
-                }else {
+                if (JSONParse.parseView(s)) {
+                    listener.success();
+                } else {
                     listener.faile();
                 }
             }
@@ -123,6 +125,7 @@ public class UpdateThread {
 
     public interface UpdateListener {
         void success();
+
         void faile();
     }
 }

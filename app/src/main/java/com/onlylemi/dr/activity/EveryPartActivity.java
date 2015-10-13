@@ -31,9 +31,7 @@ public class EveryPartActivity extends AppCompatActivity {
     public static final String TAG = "EveryPartActivity:";
     private ImageView imageView;
     private TextView textViewDescription;
-    private String string;
     private Button button;
-    private Button videoButton;
     private MyGridView gridView;
     private TextView tvName;
     private TextView tvAddress;
@@ -54,9 +52,11 @@ public class EveryPartActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.activity_every_part_image_view);
         textViewDescription = (TextView) findViewById(R.id.activity_every_part_description_text_view);
         gridView = (MyGridView) findViewById(R.id.activity_every_part_grid_view);
-        tvAddress = (TextView)findViewById(R.id.activity_every_part_address);
-        tvName = (TextView)findViewById(R.id.activity_every_part_name);
+        tvAddress = (TextView) findViewById(R.id.activity_every_part_address);
+        tvName = (TextView) findViewById(R.id.activity_every_part_name);
 
+
+        // 下拉刷新数据
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.custom_test_five_title_background)
                 , getResources().getColor(R.color.custom_test_four)
                 , getResources().getColor(R.color.custom_test_one)
@@ -78,6 +78,7 @@ public class EveryPartActivity extends AppCompatActivity {
             }
         });
 
+        // 从上个activity得到数据
         Intent intent = getIntent();
         pid = intent.getIntExtra("PlaceID", pid);
         imageUrl = intent.getStringExtra("MainPlace");
@@ -93,6 +94,7 @@ public class EveryPartActivity extends AppCompatActivity {
         new PlacePhotoDownloadTask(imageView).execute(imageUrl);
         this.initAdapter();
         gridView.setAdapter(adapter);
+
         gridView.post(new Runnable() {
             @Override
             public void run() {
@@ -100,6 +102,7 @@ public class EveryPartActivity extends AppCompatActivity {
 
             }
         });
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -114,6 +117,7 @@ public class EveryPartActivity extends AppCompatActivity {
             }
         });
 
+
         button = (Button) findViewById(R.id.activity_every_part_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,21 +126,22 @@ public class EveryPartActivity extends AppCompatActivity {
             }
         });
 
-        /*videoButton = (Button) findViewById(R.id.activity_every_part_video_button);
-        videoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    *//*Intent intent = new Intent(EveryPartActivity.this, VitamioActivity.class);
-                    startActivity(intent);*//*
-            }
-        });*/
     }
 
+    /**
+     * 初始化数据适配器
+     */
     private void initAdapter() {
         adapter = new EveryPartAdapter(this);
         Log.e(TAG, "size == " + adapter.viewsTableList.size());
     }
 
+    /**
+     * 创建菜单
+     *
+     * @param menu menu
+     * @return boolean
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         ActionBar actionBar = getSupportActionBar();
@@ -145,7 +150,10 @@ public class EveryPartActivity extends AppCompatActivity {
         return true;
     }
 
-    public void update(){
+    /**
+     * 更新数据
+     */
+    public void update() {
         adapter.update();
         adapter.notifyDataSetChanged();
     }

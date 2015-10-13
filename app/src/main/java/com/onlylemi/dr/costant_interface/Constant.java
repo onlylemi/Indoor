@@ -3,6 +3,7 @@ package com.onlylemi.dr.costant_interface;
 /**
  * Created by 董神 on 2015/9/28.
  * I love programming
+ * constant
  */
 public class Constant {
     public static final int READY_GO = 0;

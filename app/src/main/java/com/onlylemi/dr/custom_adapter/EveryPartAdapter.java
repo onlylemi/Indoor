@@ -87,6 +87,9 @@ public class EveryPartAdapter extends BaseAdapter {
     }
 
 
+    /**
+     * geng
+     */
     public void update() {
         viewsTableList.clear();
         for (int i = 0; i < Data.viewTableList.size(); i++) {

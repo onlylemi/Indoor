@@ -21,7 +21,6 @@ import com.onlylemi.dr.util.JSONHttp;
 import com.onlylemi.dr.util.JSONParse;
 import com.onlylemi.dr.util.NetworkJudge;
 import com.onlylemi.indoor.R;
-import com.onlylemi.parse.Data;
 import com.onlylemi.user.Assist;
 
 import java.io.File;
@@ -42,6 +41,7 @@ public class ReadyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //判断wi-fi是否存在
         if (!NetworkJudge.isWifiEnabled(this)) {
             synchronized (ReadyActivity.this) {
                 Toast.makeText(ReadyActivity.this, "no wi-fi", Toast.LENGTH_SHORT).show();
@@ -53,13 +53,6 @@ public class ReadyActivity extends Activity {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case Constant.READY_GO:
-                        Log.e(TAG, "NodesContact number : " + Data.nodesContactTableList.size());
-                        Log.e(TAG, "city number : " + Data.getCityTableList().size());
-                        Log.e(TAG, "Nodes number : " + Data.nodesTableList.size());
-                        Log.e(TAG, "floorplan number : " + Data.floorPlanTableList.size());
-                        Log.e(TAG, "views number : " + Data.viewTableList.size());
-                        Log.e(TAG, "palce number : " + Data.placeTableList.size());
-                        Log.e(TAG, "activity number : " + Data.activityTableList.size());
                         Intent intent = new Intent(ReadyActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
@@ -87,29 +80,47 @@ public class ReadyActivity extends Activity {
         });
         BaiduLocate.getInstance().startLocate();
 
-        //是否删除文件缓存
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         editor = preferences.edit();
         int flag = preferences.getInt("Flag", -1);
         Assist.user = preferences.getString("user", "");
+
+        judgeClearPictureCache(flag);
+
+        setContentView(R.layout.activity_ready);
+        CheckThread.getCheckThread().startCheck();
+    }
+
+    /**
+     * 从JSON串中解析数据 JSON串的来源根据应用启动次数判断，如果是10的倍数，从
+     * 网络获取，否则从文件获取。
+     *
+     * @param flag 应用启动次数
+     */
+    private void initData(int flag) {
         if (flag == -1) {
             editor.putInt("Flag", 1);
             JSONParse();//由于数据比较少，直接解析所有JSON数据 存到本地
             editor.apply();
-        } else if (flag % 1 == 0) {
+        } else if (flag % 10 == 0) {
             JSONParse();//由于数据比较少，直接解析所有JSON数据 存到本地
-            editor.putInt("Flag", ++flag);
-            Log.i("Test", "network::::" + --flag);
+            editor.putInt("Flag", flag + 1);
+            Log.i("Test", "network::::" + flag);
             editor.apply();
         } else {
             JSONParseFromFile();//从本地获取
-            editor.putInt("Flag", ++flag);
-            Log.i("Test", "file::::" + --flag);
+            editor.putInt("Flag", flag + 1);
+            Log.i("Test", "file::::" + flag);
             editor.apply();
         }
+    }
 
-
-        //判断是否删除图片缓存
+    /**
+     * 是否清楚图片缓存 更具应用启动次数
+     *
+     * @param flag 应用启动次数
+     */
+    private void judgeClearPictureCache(int flag) {
         if (NetworkJudge.isWifiEnabled(getApplicationContext())) {
             try {
                 String cachePath;
@@ -127,7 +138,7 @@ public class ReadyActivity extends Activity {
                 File cacheDir = new File(cachePath + File.separator + "bitmap");
                 Log.i(AsyncImageLoader.TAG, "cache dir :　" + cacheDir);
                 if (cacheDir.exists()) {
-                    if ((flag - 1) % 1 == 0) {
+                    if ((flag - 1) % 15 == 0) {
                         DiskLruCache.deleteContents(cacheDir);
                         Log.i(AsyncImageLoader.TAG, "cache dir :　" + cacheDir);
                     }
@@ -139,13 +150,10 @@ public class ReadyActivity extends Activity {
             Toast.makeText(ReadyActivity.this, "当前无wifi连接", Toast.LENGTH_SHORT).show();
         }
 
-        setContentView(R.layout.activity_ready);
-
-        CheckThread.getCheckThread().startCheck();
     }
 
     /**
-     * 所有JSON解析
+     * 从网上解析JSON
      */
     private void JSONParse() {
         String url = "http://indoor.onlylemi.com/android/?r=place";
@@ -222,11 +230,13 @@ public class ReadyActivity extends Activity {
         http.start();
     }
 
+    /**
+     * 从本地文件中解析JSON
+     */
     private void JSONParseFromFile() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 //地方信息初始化
                 String s = diskCache.read(diskCache.PlaceTableName);
                 JSONParse.parsePlace(s);
@@ -246,9 +256,11 @@ public class ReadyActivity extends Activity {
                 //所有nodescontact信息初始化
                 s = diskCache.read(diskCache.NodesContactTableName);
                 JSONParse.parseNodesContact(s);
+
                 //所有nodes信息初始化
                 s = diskCache.read(diskCache.NodesTableName);
                 JSONParse.parseNodes(s);
+
                 //城市信息初始化
                 s = diskCache.read(diskCache.CityTableName);
                 JSONParse.parseCity(s);
