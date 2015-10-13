@@ -93,6 +93,7 @@ public class FindFragment extends Fragment {
                 intent.putExtra("MainPlace", s);
                 intent.putExtra("name", myAdapter.placeTables.get(position).getName());
                 intent.putExtra("intro", myAdapter.placeTables.get(position).getIntro());
+                intent.putExtra("address", myAdapter.placeTables.get(position).getAddress());
                 Assist.currentPlaceId = pid;
                 startActivity(intent);
             }

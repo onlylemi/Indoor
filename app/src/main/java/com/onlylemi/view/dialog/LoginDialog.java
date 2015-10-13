@@ -3,6 +3,7 @@ package com.onlylemi.view.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,10 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.onlylemi.dr.activity.ReadyActivity;
 import com.onlylemi.indoor.R;
 import com.onlylemi.parse.JSONUpload;
 import com.onlylemi.parse.info.UserTable;
+import com.onlylemi.user.Assist;
 import com.onlylemi.utils.MD5;
 
 import java.io.UnsupportedEncodingException;
@@ -78,6 +79,7 @@ public class LoginDialog extends Dialog implements JSONUpload.OnUploadDataListen
                 String pw = editTextPassword.getText().toString();
                 UserTable userTable = new UserTable();
                 userTable.setEmail(name);
+                Assist.user = editTextName.getText().toString();
                 userTable.setPassword(MD5.getMD5Code(pw));
                 JSONUpload upload = new JSONUpload(activity);
                 upload.setOnUploadDataListener(LoginDialog.this);
@@ -86,11 +88,21 @@ public class LoginDialog extends Dialog implements JSONUpload.OnUploadDataListen
 //                new UserLoginTask().execute();
             }
         });
+        if (!Assist.user.equals("")) {
+            Toast.makeText(activity, Assist.user, Toast.LENGTH_LONG).show();
+            dismiss();
+        }
     }
 
     @Override
     public void onSuccess(int success, String message) {
         Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+        SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("user", Assist.user);
+        Toast.makeText(activity, Assist.user, Toast.LENGTH_LONG).show();
+        editor.commit();
+        dismiss();
     }
 
     @Override

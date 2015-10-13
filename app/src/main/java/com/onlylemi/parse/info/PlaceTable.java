@@ -15,6 +15,7 @@ public class PlaceTable extends BaseTable {
     private Integer cid;
     private Double lng;
     private Double lat;
+    private String address;
 
     public PlaceTable() {
     }
@@ -92,6 +93,14 @@ public class PlaceTable extends BaseTable {
 
     public void setLat(double lat) {
         this.lat = lat;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override
