@@ -95,7 +95,7 @@ public class MapFragment extends Fragment implements BaiduMap.OnMarkerClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_map, null, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = (MapView) view.findViewById(R.id.bmapView);
         mapView.showZoomControls(false);
         baiduMap = mapView.getMap();

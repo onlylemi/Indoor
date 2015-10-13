@@ -8,10 +8,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Handler;
+import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +39,7 @@ import com.indooratlas.android.ServiceState;
 import com.onlylemi.camera.PreviewSurface;
 import com.onlylemi.camera.RouteSurface;
 import com.onlylemi.dr.listViewAnimation.ScaleInAnimationAdapter;
+import com.onlylemi.dr.util.UpdateThread;
 import com.onlylemi.map.MapView;
 import com.onlylemi.map.MapViewListener;
 import com.onlylemi.map.core.PMark;
@@ -48,9 +47,7 @@ import com.onlylemi.map.overlay.BitmapOverlay;
 import com.onlylemi.map.overlay.LocationOverlay;
 import com.onlylemi.map.overlay.MarkOverlay;
 import com.onlylemi.map.overlay.RouteOverlay;
-import com.onlylemi.map.utils.AssistMath;
 import com.onlylemi.parse.JSONParseTable;
-import com.onlylemi.parse.JSONUpload;
 import com.onlylemi.parse.info.ActivityTable;
 import com.onlylemi.parse.info.UserPositionTable;
 import com.onlylemi.utils.Assist;
@@ -58,12 +55,7 @@ import com.onlylemi.utils.Constants;
 import com.onlylemi.view.dialog.AddViewsActivityDialog;
 import com.onlylemi.view.dialog.LoginDialog;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -113,6 +105,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     //路线list
     private List<Integer> routeList;
     private List<Float> routeListDegrees;
+    private List<Integer> selectViewsList;
 
     //加载
     private RelativeLayout progress;
@@ -149,9 +142,16 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
 
     private float startDegree;
 
+
+    private SwipeRefreshLayout viewsActivitySwipe;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_indoor);
+
+        Bundle bundle = this.getIntent().getExtras();
+        selectViewsList = bundle.getIntegerArrayList("select_views_list");
+        Log.i(TAG, selectViewsList.toString());
     }
 
     @Override
@@ -180,6 +180,8 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         cameraRouteLayout = (RelativeLayout) findViewById(R.id.camera_route);
         previewCameraSurface = (PreviewSurface) findViewById(R.id.preview_camera_surface);
         routeCameraSurface = (RouteSurface) findViewById(R.id.route_camera_surface);
+
+        settingViewsActivitySwipe();
 
         //侧边商家活动
         viewsActivityAdapter = new ViewsActivityAdapter(this);
@@ -223,6 +225,7 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         nodesContact = JSONParseTable.getNodesContactList(pid, fn);
 
         deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
 
         initIndoorAtlas();
         loadMapView();
@@ -463,9 +466,10 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v == addViewActivityBtn) {
-//            AddViewsActivityDialog dialog = new AddViewsActivityDialog(this, views);
-            LoginDialog dialog = new LoginDialog(this);
-            dialog.show();
+//            AddViewsActivityDialog dialog1 = new AddViewsActivityDialog(this, views);
+//            dialog1.show();
+            LoginDialog dialog2 = new LoginDialog(this);
+            dialog2.show();
         } else if (v == layout_all) {
             showListPop();
         } else if (v == floor_1) {
@@ -557,8 +561,17 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         mapView.getOverLays().add(markOverlay);
 
         // 路径层
+        if (selectViewsList.size() != 0 && views.size() != 0) {
+            List<PointF> list = new ArrayList<>();
+            list.add(new PointF(views.get(views.size() - 1).x, views.get(views.size() - 1).y));
+            for (int i = 0; i < selectViewsList.size(); i++) {
+                list.add(new PointF(views.get(selectViewsList.get(i)).x, views.get(selectViewsList.get(i)).y));
+            }
+            routeList = com.onlylemi.map.utils.Assist.getShortestPathBetweenPoints(list, nodes, nodesContact);
+        }
+
         routeOverlay = new RouteOverlay(mapView, nodes,
-                null);
+                routeList);
         mapView.getOverLays().add(routeOverlay);
 
         // 定位层
@@ -818,4 +831,45 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
             }
         }
     }
+
+
+    /**
+     * 设置viewsActivity 下拉刷新
+     */
+    private void settingViewsActivitySwipe() {
+        viewsActivitySwipe = (SwipeRefreshLayout) findViewById(R.id.views_activity_swipe);
+        viewsActivitySwipe.setColorSchemeColors(getResources().getColor(R.color.custom_test_five_title_background)
+                , getResources().getColor(R.color.custom_test_four)
+                , getResources().getColor(R.color.custom_test_one)
+                , getResources().getColor(R.color.custom_test_three));
+        viewsActivitySwipe.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.gray));
+        viewsActivitySwipe.setSize(SwipeRefreshLayout.LARGE);
+        viewsActivitySwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                UpdateThread.getInstance().updateActivity(new UpdateThread.UpdateListener() {
+                    @Override
+                    public void success() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                viewsActivityAdapter = new ViewsActivityAdapter(IndoorActivity.this);
+                                //viewsActivityAdapter.update();
+                                viewsActivityAdapter.notifyDataSetChanged();
+                                Toast.makeText(IndoorActivity.this, "活动列表更新成功！", Toast.LENGTH_SHORT).show();
+                                viewsActivitySwipe.setRefreshing(false);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void faile() {
+
+                    }
+                });
+            }
+        });
+    }
+
+
 }

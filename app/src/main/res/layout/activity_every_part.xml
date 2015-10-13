@@ -128,7 +128,7 @@
                     android:numColumns="2"
                     android:scrollbars="none"
                     android:stretchMode="columnWidth"
-                    android:verticalSpacing="5dp"
+                    android:verticalSpacing="3dp"
                     android:layout_marginBottom="65dp">
 
                 </com.onlylemi.dr.custom_view.MyGridView>

@@ -36,26 +36,7 @@ public class ViewsActivityAdapter extends BaseAdapter {
         activityTable = new ArrayList<>();
         viewsActivityVidList = new ArrayList<>();
 
-        for (int i = 0; i < Data.viewTableList.size(); i++) {
-            if (Data.viewTableList.get(i).getPid() == pid &&
-                    Data.viewTableList.get(i).getFn() == fn) {
-                for (ActivityTable activities : Data.activityTableList) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    try {
-                        //结束时间
-                        long d1 = sdf.parse(activities.getEndTime()).getTime() + 24 * 60 * 60 * 1000;
-                        //当前时间
-                        long d2 = System.currentTimeMillis();
-                        if (activities.getVid() == Data.viewTableList.get(i).getId() && d2 <= d1) {
-                            activityTable.add(activities);
-                            viewsActivityVidList.add(activities.getVid());
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        update();
     }
 
     @Override
@@ -109,4 +90,30 @@ public class ViewsActivityAdapter extends BaseAdapter {
         public TextView intro;
 
     }
+
+    public void update() {
+        viewsActivityVidList.clear();
+
+        for (int i = 0; i < Data.viewTableList.size(); i++) {
+            if (Data.viewTableList.get(i).getPid() == pid &&
+                    Data.viewTableList.get(i).getFn() == fn) {
+                for (ActivityTable activities : Data.activityTableList) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    try {
+                        //结束时间
+                        long d1 = sdf.parse(activities.getEndTime()).getTime() + 24 * 60 * 60 * 1000;
+                        //当前时间
+                        long d2 = System.currentTimeMillis();
+                        if (activities.getVid() == Data.viewTableList.get(i).getId() && d2 <= d1) {
+                            activityTable.add(activities);
+                            viewsActivityVidList.add(activities.getVid());
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
 }

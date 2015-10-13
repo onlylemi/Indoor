@@ -66,14 +66,22 @@
 
         </RelativeLayout>
 
-        <ListView
-            android:id="@+id/views_activity_list"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/views_activity_swipe"
             android:layout_width="240dip"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:background="@color/custom_test_one"
-            android:divider="@color/custom_test_one"
-            android:footerDividersEnabled="false"></ListView>
+            android:layout_gravity="end">
+
+            <ListView
+                android:id="@+id/views_activity_list"
+                android:layout_width="240dip"
+                android:layout_height="match_parent"
+                android:background="@color/custom_test_one"
+                android:divider="@color/custom_test_one"
+                android:footerDividersEnabled="false" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
 
     </android.support.v4.widget.DrawerLayout>
 

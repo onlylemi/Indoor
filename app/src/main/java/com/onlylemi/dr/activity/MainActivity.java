@@ -23,7 +23,7 @@ import com.onlylemi.user.Assist;
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, MapFragment.OnFragmentInteractionListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity:";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
 
         if (BaiduLocate.getCurrentCity() != null) {
             mTitle = BaiduLocate.getCurrentCity();
-            Assist.currentCity = (String)mTitle;
+            Assist.currentCity = (String) mTitle;
             Assist.currentCityID = Data.getCityId(BaiduLocate.getCurrentCity());
             for (int i = 0; i < Data.getCityTableList().size(); i++) {
                 Log.i(TAG, mTitle + "==" + Data.getCityTableList().get(i));
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if(item.getItemId() == R.id.map_switch) {
+        if (item.getItemId() == R.id.map_switch) {
             mMapFragment.switchModel();
 //            LoginDialog dialog = new LoginDialog(this);
 //            dialog.show();

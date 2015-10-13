@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.onlylemi.indoor.IndoorActivity;
 import com.onlylemi.indoor.R;
 import com.onlylemi.parse.JSONUpload;
 import com.onlylemi.parse.info.UserTable;
@@ -103,6 +104,9 @@ public class LoginDialog extends Dialog implements JSONUpload.OnUploadDataListen
         Toast.makeText(activity, Assist.user, Toast.LENGTH_LONG).show();
         editor.commit();
         dismiss();
+
+        AddViewsActivityDialog dialog = new AddViewsActivityDialog(activity, IndoorActivity.views);
+        dialog.show();
     }
 
     @Override

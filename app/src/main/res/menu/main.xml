@@ -2,8 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.onlylemi.dr.activity.MainActivity">
+
     <item
         android:id="@+id/map_switch"
+        android:icon="@drawable/ic_repeat_white_24dp"
         android:title="切换模式"
-        app:showAsAction="never"/>
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/share1"
+        android:icon="@drawable/ic_favorite_border_white_24dp"
+        android:title="分享"
+        app:showAsAction="always" />
+
+
 </menu>
