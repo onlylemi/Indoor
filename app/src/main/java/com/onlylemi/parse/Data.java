@@ -20,7 +20,7 @@ import java.util.List;
 public class Data {
 
     public static List<ActivityTable> activityTableList = new ArrayList<>();
-    private static List<CityTable> cityTableList = new ArrayList<>();
+    public static List<CityTable> cityTableList = new ArrayList<>();
     public static List<FloorPlanTable> floorPlanTableList = new ArrayList<>();
     public static List<NodesContactTable> nodesContactTableList = new ArrayList<>();
     public static List<NodesTable> nodesTableList = new ArrayList<>();

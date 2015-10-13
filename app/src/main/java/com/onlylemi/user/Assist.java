@@ -11,4 +11,5 @@ public class Assist {
     public static int currentFloorId = -1;
     public static int currentViewId = -1;
 
+    public static String user = "";
 }

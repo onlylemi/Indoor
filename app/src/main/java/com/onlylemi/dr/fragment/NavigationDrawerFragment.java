@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.onlylemi.indoor.R;
 import com.onlylemi.parse.Data;
@@ -117,6 +118,22 @@ public class NavigationDrawerFragment extends Fragment implements SearchView.OnQ
                 list);
         mDrawerListView.setAdapter(listAdapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+        if(list.size() == 0) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(true) {
+                        if(Data.getOnlyCity().size() != 0) {
+                            Toast.makeText(getActivity(), "success data", Toast.LENGTH_SHORT).show();
+                            list = (ArrayList)Data.getOnlyCity();
+                            listAdapter.notifyDataSetChanged();
+                            break;
+                        }
+                    }
+                }
+            }).start();
+        }
 
         SearchView searchview = (SearchView) view.findViewById(R.id.searchView);
         searchview.setOnQueryTextListener(this);

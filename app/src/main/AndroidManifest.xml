@@ -31,7 +31,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="ltsrbYntYp84UpdG1aTgNsGl" />
+            android:value="OGip13oacyM7s6xIaVMhYmzm" />
 
         <activity
             android:name="com.onlylemi.dr.activity.ReadyActivity"
