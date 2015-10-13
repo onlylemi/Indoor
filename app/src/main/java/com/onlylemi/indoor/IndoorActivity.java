@@ -1,5 +1,7 @@
 package com.onlylemi.indoor;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
@@ -466,10 +468,14 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v == addViewActivityBtn) {
-//            AddViewsActivityDialog dialog1 = new AddViewsActivityDialog(this, views);
-//            dialog1.show();
-            LoginDialog dialog2 = new LoginDialog(this);
-            dialog2.show();
+            if ("".equals(com.onlylemi.user.Assist.user)) {
+                LoginDialog dialog = new LoginDialog(this);
+                dialog.show();
+            } else {
+                Toast.makeText(this, com.onlylemi.user.Assist.user + "在线！", Toast.LENGTH_SHORT).show();
+                AddViewsActivityDialog dialog = new AddViewsActivityDialog(this, views);
+                dialog.show();
+            }
         } else if (v == layout_all) {
             showListPop();
         } else if (v == floor_1) {

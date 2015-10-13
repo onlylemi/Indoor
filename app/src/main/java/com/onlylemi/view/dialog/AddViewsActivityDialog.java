@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -115,6 +116,8 @@ public class AddViewsActivityDialog extends Dialog implements View.OnClickListen
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        monthOfYear = monthOfYear + 1;
+
         String month = monthOfYear < 10 ? "0" + monthOfYear : "" + monthOfYear;
         String day = dayOfMonth < 10 ? "0" + dayOfMonth : "" + dayOfMonth;
 

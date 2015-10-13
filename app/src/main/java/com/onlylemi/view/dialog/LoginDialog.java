@@ -90,19 +90,17 @@ public class LoginDialog extends Dialog implements JSONUpload.OnUploadDataListen
             }
         });
         if (!Assist.user.equals("")) {
-            Toast.makeText(activity, Assist.user, Toast.LENGTH_LONG).show();
-            dismiss();
+            Toast.makeText(activity, Assist.user + " 用户在线！", Toast.LENGTH_LONG).show();
+            this.cancel();
         }
     }
 
     @Override
     public void onSuccess(int success, String message) {
         Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+
         SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("user", Assist.user);
-        Toast.makeText(activity, Assist.user, Toast.LENGTH_LONG).show();
-        editor.commit();
+        preferences.edit().putString("user", editTextName.getText().toString()).commit();
         dismiss();
 
         AddViewsActivityDialog dialog = new AddViewsActivityDialog(activity, IndoorActivity.views);

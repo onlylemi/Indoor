@@ -1,6 +1,7 @@
 package com.onlylemi.dr.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -88,10 +89,11 @@ public class ReadyActivity extends Activity {
         BaiduLocate.getInstance().startLocate();
 
         //是否删除文件缓存
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences preferences = this.getPreferences(Context.MODE_PRIVATE);
         editor = preferences.edit();
         int flag = preferences.getInt("Flag", -1);
         Assist.user = preferences.getString("user", "");
+        Log.i(TAG, "用户：" + Assist.user);
         if (flag == -1) {
             editor.putInt("Flag", 1);
             JSONParse();//由于数据比较少，直接解析所有JSON数据 存到本地
