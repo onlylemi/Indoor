@@ -148,7 +148,7 @@ public class ReadyActivity extends Activity {
      * 所有JSON解析
      */
     private void JSONParse() {
-        String url = "http://indoor.0onlylemi.com/android/?r=place";
+        String url = "http://indoor.onlylemi.com/android/?r=place";
         //所有地方信息初始化
         new JSONHttp(url, new JSONHttp.JSONHttpReturn() {
             @Override

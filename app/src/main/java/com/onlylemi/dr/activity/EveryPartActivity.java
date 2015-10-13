@@ -35,6 +35,8 @@ public class EveryPartActivity extends AppCompatActivity {
     private Button button;
     private Button videoButton;
     private MyGridView gridView;
+    private TextView tvName;
+    private TextView tvAddress;
     private EveryPartAdapter adapter;
     private int pid;
     private String imageUrl;
@@ -52,6 +54,8 @@ public class EveryPartActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.activity_every_part_image_view);
         textViewDescription = (TextView) findViewById(R.id.activity_every_part_description_text_view);
         gridView = (MyGridView) findViewById(R.id.activity_every_part_grid_view);
+        tvAddress = (TextView)findViewById(R.id.activity_every_part_address);
+        tvName = (TextView)findViewById(R.id.activity_every_part_name);
 
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.custom_test_five_title_background)
                 , getResources().getColor(R.color.custom_test_four)
@@ -79,9 +83,12 @@ public class EveryPartActivity extends AppCompatActivity {
         imageUrl = intent.getStringExtra("MainPlace");
         String intro = intent.getStringExtra("intro");
         String name = intent.getStringExtra("name");
+        String address = intent.getStringExtra("address");
 
 
         textViewDescription.setText(intro);
+        tvName.setText(name);
+        tvAddress.setText(address);
         this.name = name;
         new PlacePhotoDownloadTask(imageView).execute(imageUrl);
         this.initAdapter();
