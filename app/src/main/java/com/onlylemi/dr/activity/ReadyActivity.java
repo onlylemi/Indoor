@@ -87,6 +87,8 @@ public class ReadyActivity extends Activity {
 
         judgeClearPictureCache(flag);
 
+        initData(flag);
+
         setContentView(R.layout.activity_ready);
         CheckThread.getCheckThread().startCheck();
     }
@@ -264,6 +266,7 @@ public class ReadyActivity extends Activity {
                 //城市信息初始化
                 s = diskCache.read(diskCache.CityTableName);
                 JSONParse.parseCity(s);
+                handler.sendEmptyMessageDelayed(Constant.READY_GO, 1000);
             }
         }).start();
     }

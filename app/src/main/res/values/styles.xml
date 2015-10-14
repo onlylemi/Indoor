@@ -99,4 +99,8 @@
         <item name="background">@color/custom</item>
     </style>
 
+    <style name="IntroduceDialog" parent="Base.Theme.AppCompat.Dialog">
+        <item name="android:background">@drawable/introduce_background</item>
+    </style>
+
 </resources>

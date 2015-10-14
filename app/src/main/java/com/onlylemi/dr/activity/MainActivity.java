@@ -11,11 +11,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.onlylemi.view.dialog.LoginDialog;
 import com.onlylemi.dr.fragment.FindFragment;
 import com.onlylemi.dr.fragment.MapFragment;
 import com.onlylemi.dr.fragment.NavigationDrawerFragment;
 import com.onlylemi.dr.util.BaiduLocate;
+import com.onlylemi.dr.util.IntrodruceDialog;
 import com.onlylemi.indoor.R;
 import com.onlylemi.parse.Data;
 import com.onlylemi.user.Assist;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
 
         if (BaiduLocate.getCurrentCity() != null) {
             mTitle = BaiduLocate.getCurrentCity();
-            Assist.currentCity = (String)mTitle;
+            Assist.currentCity = (String) mTitle;
             Assist.currentCityID = Data.getCityId(BaiduLocate.getCurrentCity());
             for (int i = 0; i < Data.getCityTableList().size(); i++) {
                 Log.i(TAG, mTitle + "==" + Data.getCityTableList().get(i));
@@ -145,10 +145,10 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if(item.getItemId() == R.id.map_switch) {
+        if (item.getItemId() == R.id.map_switch) {
             mMapFragment.switchModel();
-//            LoginDialog dialog = new LoginDialog(this);
-//            dialog.show();
+            IntrodruceDialog dialog = new IntrodruceDialog(this);
+            dialog.show();
         }
         return super.onOptionsItemSelected(item);
     }

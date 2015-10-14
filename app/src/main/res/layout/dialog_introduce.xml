@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="40dp"
     android:orientation="vertical"
-    android:background="@drawable/introduce_background">
+    android:background="@drawable/introduce_background"
+    android:layout_gravity="center">
 
 
     <TextView
@@ -12,18 +12,41 @@
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textSize="20sp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
         android:textStyle="bold"/>
     <TextView
-        android:id="@+id/dialog_introduce_tv"
+        android:id="@+id/dialog_introduce_school"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
         android:textSize="15sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_gravity="center"
-        android:text="ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"/>
+        android:textStyle="bold"
+        android:text="学校       ： 中北大学"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textSize="15sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:lineSpacingMultiplier="1.6"
+        android:text="团队成员 ： 齐建斌  董睿  贾晨涛  郑晓庆  狄林丽" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textSize="15sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:lineSpacingMultiplier="1.6"
+        android:text="联系方式 ：329421410@qq.com"/>
 
 </LinearLayout>
