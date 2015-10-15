@@ -16,12 +16,14 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onlylemi.dr.custom_adapter.EveryPartAdapter;
 import com.onlylemi.dr.custom_view.MyGridView;
 import com.onlylemi.dr.util.PlacePhotoDownloadTask;
 import com.onlylemi.indoor.IndoorActivity;
 import com.onlylemi.indoor.R;
+import com.onlylemi.user.Assist;
 import com.onlylemi.utils.Share;
 
 import java.util.ArrayList;
@@ -138,8 +140,12 @@ public class EveryPartActivity extends AppCompatActivity {
                 bundle.putIntegerArrayList("select_views_list", (ArrayList<Integer>) selectViewsList);
                 Intent intent1 = new Intent();
                 intent1.putExtras(bundle);
-                intent1.setClass(EveryPartActivity.this, IndoorActivity.class);
-                startActivity(intent1);
+                if (pid == Assist.tangjiuId) {
+                    intent1.setClass(EveryPartActivity.this, IndoorActivity.class);
+                    startActivity(intent1);
+                } else {
+                    Toast.makeText(EveryPartActivity.this, "该地区正在后期开发中，敬请期待！请先游览中北大学唐久便利", Toast.LENGTH_LONG).show();
+                }
             }
         });
 

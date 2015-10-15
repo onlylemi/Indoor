@@ -481,28 +481,30 @@ public class IndoorActivity extends BaseActivity implements View.OnClickListener
         } else if (v == floor_1) {
             changeTextView(v);
             morePop.dismiss();
-            apiFloorId = Constants.INDOORATLAS_FLOOR_1_Id;
-            apiFloorPlanId = Constants.INDOORATLAS_FLOOR_1_PLAN_Id;
-            mapDegree = 180;
+            apiFloorId = Constants.TANGJIU_FLOOR_1_Id;
+            apiFloorPlanId = Constants.TANGJIU_FLOOR_1_PLAN_Id;
+            mapDegree = 0.0f;
             togglePositioning();
             loadMapView();
         } else if (v == floor_2) {
-            changeTextView(v);
             morePop.dismiss();
+            /*changeTextView(v);
             apiFloorId = Constants.INDOORATLAS_FLOOR_2_Id;
             apiFloorPlanId = Constants.INDOORATLAS_FLOOR_2_PLAN_Id;
             mapDegree = 0;
             mapView.setVisibility(View.GONE);
             togglePositioning();
-            loadMapView();
+            loadMapView();*/
+            Toast.makeText(this, "该地区仅有一层", Toast.LENGTH_SHORT).show();
         } else if (v == floor_3) {
-            changeTextView(v);
             morePop.dismiss();
+            /*changeTextView(v);
             apiFloorId = Constants.INDOORATLAS_FLOOR_3_Id;
             apiFloorPlanId = Constants.INDOORATLAS_FLOOR_3_PLAN_Id;
             mapDegree = 0;
             togglePositioning();
-            loadMapView();
+            loadMapView();*/
+            Toast.makeText(this, "该地区仅有一层", Toast.LENGTH_SHORT).show();
         } else if (v == imgPosition) {
             togglePositioning();
         } else if (v == imgCameraPosition) {

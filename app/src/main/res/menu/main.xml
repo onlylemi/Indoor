@@ -10,9 +10,9 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/share1"
-        android:icon="@drawable/ic_favorite_border_white_24dp"
-        android:title="分享"
+        android:id="@+id/intro_team"
+        android:icon="@drawable/ic_cloud_white_24dp"
+        android:title="团队介绍"
         app:showAsAction="always" />
 
 
