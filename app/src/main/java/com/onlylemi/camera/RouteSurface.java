@@ -45,6 +45,7 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
     private Bitmap bmp3DStraightConvert;
 
     private float rotateDegree = 0;
+    private float maxDegree;
 
     public RouteSurface(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -72,6 +73,8 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
         cy = screenH;
         cr = 2 * screenW / 5;
 
+        maxDegree = (float) Math.atan((screenW / 2) / (4 * screenH / 5));
+
         flag = true;
         //thread = new Thread(this);
         //thread.start();
@@ -94,16 +97,21 @@ public class RouteSurface extends SurfaceView implements SurfaceHolder.Callback,
      * 重新刷新surface
      */
     public void refresh() {
-        x = cx + (float) (cr * Math.sin(rotateDegree));
-        y = cy - (float) (cr * Math.cos(rotateDegree));
+        //if (Math.abs(rotateDegree) <= maxDegree) {
+            x = cx + (float) (cr * Math.sin(rotateDegree));
+            y = cy - (float) (cr * Math.cos(rotateDegree));
 
-        Log.i(TAG, "rotateDegree:" + rotateDegree + " x:" + x + " y:" + y);
+           /* x = (float) (cx + (screenH / 5) * Math.tan(rotateDegree));
+            y = cy;*/
 
-        canvas = holder.lockCanvas();
-        if (canvas != null) {
-            myDraw(canvas);
-            holder.unlockCanvasAndPost(canvas);
-        }
+            Log.i(TAG, "rotateDegree:" + rotateDegree + " x:" + x + " y:" + y);
+
+            canvas = holder.lockCanvas();
+            if (canvas != null) {
+                myDraw(canvas);
+                holder.unlockCanvasAndPost(canvas);
+            }
+        //}
     }
 
     @Override

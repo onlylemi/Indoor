@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.onlylemi.view.dialog.IntrodruceDialog;
 import com.onlylemi.view.dialog.LoginDialog;
 import com.onlylemi.dr.fragment.FindFragment;
 import com.onlylemi.dr.fragment.MapFragment;
@@ -145,11 +146,18 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (item.getItemId() == R.id.map_switch) {
-            mMapFragment.switchModel();
-//            LoginDialog dialog = new LoginDialog(this);
-//            dialog.show();
+        switch (item.getItemId()) {
+            case R.id.map_switch:
+                mMapFragment.switchModel();
+                break;
+            case R.id.intro_team:
+                IntrodruceDialog dialog = new IntrodruceDialog(this);
+                dialog.show();
+                break;
+            default:
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
